@@ -39,5 +39,11 @@ print(n_submissions, "Submissions")
 print(n_pipelines, "Pipelines")
 print(n_primitives, "Primitives")
 print(len(primitive_set), "Unique Primitives")
+assert len(institution_dirs) == 10
+assert n_submissions == 955
+assert n_pipelines == 9910
+assert n_primitives == 111682
+assert len(primitive_set) == 232
 with open(config.parse_save, 'wb') as f:
     pickle.dump(pipeline_list, f)
+
