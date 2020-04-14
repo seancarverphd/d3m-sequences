@@ -1,5 +1,6 @@
 import json
 import os
+import pickle
 
 import config
 
@@ -24,9 +25,12 @@ for institution_dir in institution_dirs:
                 with open(config.data_home + '/' + institution_dir + '/' + submission + '/' + often_just_one[0] + '/EVALUATION/pipelines_ranked/' + pipeline) as f:
                     d = json.load(f)
                 list_of_step_ids = []
+                list_of_names = []
                 for step in d['steps']:
                     list_of_step_ids.append(step['primitive']['id'])
-                # pipeline_list.append({'pipeline' : d['id'], 'primitives' : list_of_step_ids})
+                for step in d['steps']:
+                    list_of_names.append(step['primitive']['name'])
+                pipeline_list.append({'pipeline' : d['id'], 'primitives' : list_of_step_ids, 'names' : list_of_names})
                 primitive_set = primitive_set.union(set(list_of_step_ids))
                 n_pipelines += 1
                 n_primitives += len(d['steps'])
@@ -35,3 +39,5 @@ print(n_submissions, "Submissions")
 print(n_pipelines, "Pipelines")
 print(n_primitives, "Primitives")
 print(len(primitive_set), "Unique Primitives")
+with open(config.parse_save, 'wb') as f:
+    pickle.dump(pipeline_list, f)
