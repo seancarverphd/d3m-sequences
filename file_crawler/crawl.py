@@ -81,13 +81,16 @@ print(n_submissions, "Submissions")
 print(n_pipelines, "Pipelines")
 print(n_primitives, "Primitives")
 print(len(primitive_set), "Unique Primitives")
-# Assert counts haven't changed; investigate if they have
+# Assert that counts haven't changed so can investigate if they have
 assert len(institution_dirs) == 10
 assert n_submissions == 955
 assert n_pipelines == 9672  # without 27 load failures would be 9910
 assert n_primitives == 109227  # without 27 load failures would be 111682
 assert len(primitive_set) == 231 # without 27 load failues would be 232 
+# Dump data
 with open(config.parse_save, 'wb') as f:
-    pickle.dump(pipeline_list, f)
-    pickle.dump(code2id, f)
-    pickle.dump(id2code, f)
+    pickle.dump([pipeline['sequence_list'] for pipeline in pipeline_list], f)  # dump corpus
+    pickle.dump([id2code[primitive] for primitive in primitive_set], f)  # dump alphabets
+    pickle.dump(pipeline_list, f)  # dump list of pipeline dictionaries
+    pickle.dump(code2id, f)  # dump code to id translator
+    pickle.dump(id2code, f)  # dump reverse translator
