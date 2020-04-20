@@ -1,9 +1,11 @@
 import json
 import os
 import pickle
+import random
 
 import config
 
+random.seed(0)
 institution_dirs = os.listdir(config.data_home)
 n_submissions = 0
 n_pipelines = 0
@@ -47,12 +49,39 @@ for institution_dir in institution_dirs:
                 # Update counts
                 n_pipelines += 1
                 n_primitives += len(d['steps'])
+# Create list of letters
+caps_string = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+caps_list = [char for char in caps_string]
+# Create list of all possible 2-letter codes
+conceivable_codes = []
+for letter0 in caps_list:
+    for letter1 in caps_list:
+        conceivable_codes.append(letter0+letter1)  # construct list of two letter codes
+codes = random.sample(conceivable_codes, len(primitive_set))  # prune list and randomize order
+# Create translation dictionaries
+code2id = {}
+id2code = {}
+for code, primitive_id in zip(codes, primitive_set):
+    code2id[code] = primitive_id
+    id2code[primitive_id] = code
+# Create sequences for each pipeline in dictionary
+for pipeline in pipeline_list:  # each "pipeline" is a dictionary
+    sequence_list = []
+    for primitive in pipeline['primitives']:  # each primitive is a shah1 hash (or similar ID)
+        sequence_list.append(id2code[primitive])  # appending a 2-letter code (eg ['AB', 'CD'])
+    pipeline['sequence_list'] = sequence_list
+    sequence_string = sequence_list[0]  # create a string concatenating codes (eg 'AB-CD') in sequence_list; '-' separating; easier way?
+    for i in range(len(sequence_list) - 1):
+        sequence_string += '-' + sequence_list[i+1]
+    pipeline['sequence_string'] = sequence_string
+# Print counts for sanity check
 print(n_load_failures, "Failures to Load")
 print(len(institution_dirs), "Institutional Directories")
 print(n_submissions, "Submissions") 
 print(n_pipelines, "Pipelines")
 print(n_primitives, "Primitives")
 print(len(primitive_set), "Unique Primitives")
+# Assert counts haven't changed; investigate if they have
 assert len(institution_dirs) == 10
 assert n_submissions == 955
 assert n_pipelines == 9672  # without 27 load failures would be 9910
@@ -60,4 +89,5 @@ assert n_primitives == 109227  # without 27 load failures would be 111682
 assert len(primitive_set) == 231 # without 27 load failues would be 232 
 with open(config.parse_save, 'wb') as f:
     pickle.dump(pipeline_list, f)
-
+    pickle.dump(code2id, f)
+    pickle.dump(id2code, f)
