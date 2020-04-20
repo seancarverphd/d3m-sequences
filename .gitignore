@@ -130,3 +130,4 @@ dmypy.json
 
 # ADDED SGC:
 file_crawler/pipelines.pickle
+embedding/input.pickle
