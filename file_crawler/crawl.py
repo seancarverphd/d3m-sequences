@@ -14,18 +14,18 @@ pipeline_list = []
 primitive_set = set()
 problem_set = set()
 n_load_failures = 0
-unique_names_of_failed = set()
+problems_that_failed_to_load_metadata = set()
 for performer_dir in performer_dirs:
     submissions = os.listdir(config.data_home + '/' + performer_dir)
     n_submissions += len(submissions)  # A "submission" is a "(performer, problem)"
     for problem in submissions:
-        n_unf = len(unique_names_of_failed)
+        n_failed_problems = len(problems_that_failed_to_load_metadata)
         try:
             with open(config.sets_home + problem + '/' + problem + '_problem/problemDoc.json') as f:
                 d = json.load(f)  # parse problem metadata json
         except:
-            unique_names_of_failed = unique_names_of_failed.union(problem)  # add problem to list of failures
-            if len(unique_names_of_failed) > n_unf:  # indicates new failure with differently named problem
+            problems_that_failed_to_load_metadata = problems_that_failed_to_load_metadata.union(problem)  # add problem to list of failures
+            if len(problems_that_failed_to_load_metadata) > n_failed_problems:  # indicates new failure with differently named problem
                 print('PROBLEM METADATA FAILS TO LOAD:', problem)
             n_load_failures += 1
             continue  # next problem
