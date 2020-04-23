@@ -7,6 +7,7 @@ import config
 
 random.seed(0)
 
+fewer_performers = 0
 n_submissions = 0
 n_pipelines = 0
 n_primitives = 0
@@ -22,6 +23,9 @@ delta_unique_submissions = []
 
 performers = os.listdir(config.data_home)
 for performer in performers:
+    if performer == 'tamu_2':  # Eliminate this performer with only 1 problem and 1 pipeline as per S. Stanley's instructions
+        fewer_performers += 1
+        continue
     submissions = os.listdir(config.data_home + '/' + performer)
     n_submissions += len(submissions)  # A "submission" is a "(performer, problem)"
     for problem in submissions:
@@ -97,8 +101,8 @@ for pipeline in pipeline_list:  # each "pipeline" is a dictionary
 
 # Print counts for sanity check
 print(n_load_failures, "Failures to Load Problem Metadata Counting Performer Repeats")
-print(len(performers), "Performers")
-print(len(problem_set), "Problems")
+print(len(performers) - fewer_performers, "Performers Not Counting tamu_2")
+print(len(problem_set), "Problems Not Counting Failures")
 print(n_submissions, "Submissions Including Those That Fail To Load Problem Metadata") 
 print(len(unique_submissions), "Unique Submissions Not Including Failures")
 print("All", len(delta_unique_submissions), "Unique:", all([x == 1 for x in delta_unique_submissions])) 
@@ -108,10 +112,10 @@ print(len(primitive_set), "Unique Primitives")
 
 # Assert that counts haven't changed so can investigate if they have
 assert len(performers) == 10
-assert n_submissions == 955
-assert n_pipelines == 9672  # without 27 load failures would be 9910
-assert n_primitives == 109227  # without 27 load failures would be 111682
-assert len(primitive_set) == 231 # without 27 load failues would be 232 
+assert n_submissions == 954  # one less without tamu_2
+assert n_pipelines == 9671  # without 1 for tamu_2 and 27 load failures would be 9910
+assert n_primitives == 109201  # without 26 primitives from tamu_2 and the primitives in 27 load failures would be 111682
+assert len(primitive_set) == 222  # without 9 primitives unique to tamu_2's pipeline plus unique primitives from the 27 load failues would be 232 
 
 # Dump data
 with open(config.parse_save, 'wb') as f:
