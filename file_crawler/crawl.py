@@ -18,6 +18,7 @@ n_load_failures = 0
 problems_that_failed_to_load_metadata = set()
 
 debug = 0
+delta_unique_submissions = []
 
 performers = os.listdir(config.data_home)
 for performer in performers:
@@ -35,7 +36,9 @@ for performer in performers:
             n_load_failures += 1
             continue  # next problem
         submission = performer + '/' + problem
+        n_unique_submissions_old = len(unique_submissions)
         unique_submissions = unique_submissions.union({submission})
+        delta_unique_submissions.append(len(unique_submissions) - n_unique_submissions_old)
         problem_set = problem_set.union({problem})  # only increases if problem represents a new problem
         keywords = d['about']['taskKeywords']
         often_just_one = os.listdir(config.data_home + performer + '/' + problem)
@@ -93,11 +96,12 @@ for pipeline in pipeline_list:  # each "pipeline" is a dictionary
     pipeline['sequence_string'] = sequence_string
 
 # Print counts for sanity check
-print(n_load_failures, "Failures to Load")
+print(n_load_failures, "Failures to Load Problem Metadata Counting Performer Repeats")
 print(len(performers), "Performers")
 print(len(problem_set), "Problems")
-print(n_submissions, "Submissions") 
-print(len(unique_submissions), "Unique Submissions")
+print(n_submissions, "Submissions Including Those That Fail To Load Problem Metadata") 
+print(len(unique_submissions), "Unique Submissions Not Including Failures")
+print("All", len(delta_unique_submissions), "Unique:", all([x == 1 for x in delta_unique_submissions])) 
 print(n_pipelines, "Pipelines")
 print(n_primitives, "Primitives")
 print(len(primitive_set), "Unique Primitives")
