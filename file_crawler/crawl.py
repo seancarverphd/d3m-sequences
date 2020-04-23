@@ -6,17 +6,22 @@ import random
 import config
 
 random.seed(0)
-performer_dirs = os.listdir(config.data_home)
+
 n_submissions = 0
 n_pipelines = 0
 n_primitives = 0
 pipeline_list = []
+unique_submissions = set()
 primitive_set = set()
 problem_set = set()
 n_load_failures = 0
 problems_that_failed_to_load_metadata = set()
-for performer_dir in performer_dirs:
-    submissions = os.listdir(config.data_home + '/' + performer_dir)
+
+debug = 0
+
+performers = os.listdir(config.data_home)
+for performer in performers:
+    submissions = os.listdir(config.data_home + '/' + performer)
     n_submissions += len(submissions)  # A "submission" is a "(performer, problem)"
     for problem in submissions:
         n_failed_problems = len(problems_that_failed_to_load_metadata)
@@ -24,22 +29,24 @@ for performer_dir in performer_dirs:
             with open(config.sets_home + problem + '/' + problem + '_problem/problemDoc.json') as f:
                 d = json.load(f)  # parse problem metadata json
         except:
-            problems_that_failed_to_load_metadata = problems_that_failed_to_load_metadata.union(problem)  # add problem to list of failures
+            problems_that_failed_to_load_metadata = problems_that_failed_to_load_metadata.union({problem})  # add problem to list of failures
             if len(problems_that_failed_to_load_metadata) > n_failed_problems:  # indicates new failure with differently named problem
                 print('PROBLEM METADATA FAILS TO LOAD:', problem)
             n_load_failures += 1
             continue  # next problem
-        problem_set = problem_set.union(problem)  # only increases if problem represents a new problem
+        submission = performer + '/' + problem
+        unique_submissions = unique_submissions.union({submission})
+        problem_set = problem_set.union({problem})  # only increases if problem represents a new problem
         keywords = d['about']['taskKeywords']
-        often_just_one = os.listdir(config.data_home + performer_dir + '/' + problem)
+        often_just_one = os.listdir(config.data_home + performer + '/' + problem)
         assert len(often_just_one) == 1
-        pipelines = os.listdir(config.data_home + performer_dir + '/' + problem + '/' + often_just_one[0] + '/EVALUATION/pipelines_ranked')
+        pipelines = os.listdir(config.data_home + performer + '/' + problem + '/' + often_just_one[0] + '/EVALUATION/pipelines_ranked')
         for pipeline in pipelines:
             if pipeline[-4:] == 'rank':  # should have both .rank file and .json file and nothing else
                 continue  # next file in pipeline directory
             else:
                 assert pipeline[-4:] == 'json'
-                with open(config.data_home + performer_dir + '/' + problem + '/' + often_just_one[0] + '/EVALUATION/pipelines_ranked/' + pipeline) as f:
+                with open(config.data_home + performer + '/' + problem + '/' + often_just_one[0] + '/EVALUATION/pipelines_ranked/' + pipeline) as f:
                     d = json.load(f)  # parse pipeline json
                 list_of_step_ids = []
                 list_of_names = []
@@ -84,17 +91,19 @@ for pipeline in pipeline_list:  # each "pipeline" is a dictionary
     for i in range(len(sequence_list) - 1):
         sequence_string += '-' + sequence_list[i+1]
     pipeline['sequence_string'] = sequence_string
+
 # Print counts for sanity check
 print(n_load_failures, "Failures to Load")
-print(len(performer_dirs), "Performers")
+print(len(performers), "Performers")
 print(len(problem_set), "Problems")
 print(n_submissions, "Submissions") 
+print(len(unique_submissions), "Unique Submissions")
 print(n_pipelines, "Pipelines")
 print(n_primitives, "Primitives")
 print(len(primitive_set), "Unique Primitives")
 
 # Assert that counts haven't changed so can investigate if they have
-assert len(performer_dirs) == 10
+assert len(performers) == 10
 assert n_submissions == 955
 assert n_pipelines == 9672  # without 27 load failures would be 9910
 assert n_primitives == 109227  # without 27 load failures would be 111682
