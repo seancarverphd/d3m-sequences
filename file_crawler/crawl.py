@@ -1,5 +1,7 @@
 import json
+import numpy as np
 import os
+import pandas as pd
 import pickle
 import random
 
@@ -7,6 +9,9 @@ import config
 
 random.seed(0)
 
+problem_col = []
+performer_col = []
+pipeline_col = []
 fewer_performers = 0
 n_submissions = 0
 n_pipelines = 0
@@ -66,6 +71,11 @@ for performer in performers:
                 pipeline_list.append({'pipeline' : d['id'], 'keywords' : keywords, 'primitives' : list_of_step_ids, 'names' : list_of_names})
                 # Update list of unique IDs
                 primitive_set = primitive_set.union(set(list_of_step_ids))
+                # Update df_problem
+                problem_col.append(problem)
+                performer_col.append(performer)
+                pipeline_col.append(d['id'])
+                # too slow: df_problem = pd.concat([df_problem, pd.DataFrame([problem, performer, d['id']], index=(['problem', 'performer', 'pipeline']))])
                 # Update counts
                 n_pipelines += 1
                 n_primitives += len(d['steps'])
@@ -110,6 +120,8 @@ print(n_pipelines, "Pipelines")
 print(n_primitives, "Primitives")
 print(len(primitive_set), "Unique Primitives")
 
+df_problem = pd.DataFrame({'problem': problem_col, 'performer': performer_col, 'pipeline': pipeline_col})
+
 # Assert that counts haven't changed so can investigate if they have
 assert len(performers) == 10
 assert n_submissions == 954  # one less without tamu_2
@@ -118,10 +130,16 @@ assert n_primitives == 109201  # without 26 primitives from tamu_2 and the primi
 assert len(primitive_set) == 222  # without 9 primitives unique to tamu_2's pipeline plus unique primitives from the 27 load failues would be 232 
 
 # Dump data
-with open(config.parse_save, 'wb') as f:
+with open(config.sgt_data, 'wb') as f:
     pickle.dump([pipeline['sequence_list'] for pipeline in pipeline_list], f)  # dump corpus
     pickle.dump([id2code[primitive] for primitive in primitive_set], f)  # dump alphabets
+
+with open(config.pipeline_data, 'wb') as f:
     pickle.dump(pipeline_list, f)  # dump list of pipeline dictionaries
+
+with open(config.translators, 'wb') as f:
     pickle.dump(code2id, f)  # dump code to id translator
     pickle.dump(id2code, f)  # dump reverse translator
 
+with open(config.problem_data, 'wb') as f:
+    pickle.dump(df_problem, f) # dump the problem DataFrame

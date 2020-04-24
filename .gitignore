@@ -129,6 +129,4 @@ dmypy.json
 .pyre/
 
 # ADDED SGC:
-file_crawler/pipelines.pickle
-embedding/input.pickle
-embedding/eg_pairs.pickle
+*.pickle
