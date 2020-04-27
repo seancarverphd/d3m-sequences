@@ -12,6 +12,7 @@ random.seed(0)
 problem_col = []
 performer_col = []
 pipeline_col = []
+sequence_col = []
 fewer_performers = 0
 n_submissions = 0
 n_pipelines = 0
@@ -108,6 +109,7 @@ for pipeline in pipeline_list:  # each "pipeline" is a dictionary
     for i in range(len(sequence_list) - 1):
         sequence_string += '-' + sequence_list[i+1]
     pipeline['sequence_string'] = sequence_string
+    sequence_col.append(pipeline['sequence_string'])
 
 # Print counts for sanity check
 print(n_load_failures, "Failures to Load Problem Metadata Counting Performer Repeats")
@@ -120,7 +122,7 @@ print(n_pipelines, "Pipelines")
 print(n_primitives, "Primitives")
 print(len(primitive_set), "Unique Primitives")
 
-df_problem = pd.DataFrame({'problem': problem_col, 'performer': performer_col, 'pipeline': pipeline_col})
+df_problem = pd.DataFrame({'problem': problem_col, 'performer': performer_col, 'pipeline': pipeline_col, 'sequence': sequence_col})
 
 # Assert that counts haven't changed so can investigate if they have
 assert len(performers) == 10
