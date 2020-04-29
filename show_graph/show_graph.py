@@ -8,13 +8,14 @@ import networkx as nx
 with open("single_problem_data.pickle", "rb") as f:
     single_problems = pickle.load(f)
 
-performer_colors = {'cmu':'red', 'isi':'orange', 'mit':'yellow', 'nyu':'green', 'nyu_2':'blue', 'sri':'purple', 'tamu':'black', 'ucb':'brown', 'uncharted':'pink'}
+performer_colors = {'cmu':'red', 'isi':'orange', 'mit':'yellow', 'nyu':'green', 'nyu_2':'blue', 'sri':'purple', 'tamu':'grey', 'ucb':'brown', 'uncharted':'pink'}
 
 def compute_one(i):
     G = nx.Graph()
     node_labels = single_problems[i]['pipeline_num']
     n_nodes = len(node_labels)
     G.add_nodes_from(node_labels)
+    cols = [performer_colors[k] for k in single_problems[i]['performers']]
     for a in range(n_nodes-1):
         for b in range(a+1, n_nodes):
             dist = single_problems[i]['distances'][a,b]
@@ -22,16 +23,16 @@ def compute_one(i):
             G.add_edge(node_labels[a], node_labels[b], weight=similarity)
             # G.add_edge(a, b, weight=dist)
     pos = nx.spring_layout(G)
-    return G, pos
+    return G, pos, cols
 
-def show_Gpos(G, pos):
+def show_Gpos(G, pos, cols):
     # nx.draw_networkx_labels(G, pos)
-    nx.draw(G, pos, with_labels=True, edgelist=[])
+    nx.draw(G, pos, node_color=cols, with_labels=True, edgelist=[])
     plt.show()
 
 def show_one(i):
-    G, pos = compute_one(i)
-    show_Gpos(G, pos)
+    G, pos, cols = compute_one(i)
+    show_Gpos(G, pos, cols)
 
 def test32(c=1., d=2.):
     H = nx.Graph()
