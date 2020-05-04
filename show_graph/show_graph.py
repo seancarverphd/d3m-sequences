@@ -11,6 +11,10 @@ with open("single_problem_data.pickle", "rb") as f:
 
 performer_colors = {'cmu':'red', 'isi':'orange', 'mit':'yellow', 'nyu':'green', 'nyu_2':'blue', 'sri':'purple', 'tamu':'grey', 'ucb':'brown', 'uncharted':'pink'}
 
+
+def dist2sim(dist):
+    return 1000. if dist == 0 else 1./dist 
+
 def compute_one(i, seed=None, performer2watch=None):
     G = nx.Graph()
     maxd = 0
@@ -25,7 +29,7 @@ def compute_one(i, seed=None, performer2watch=None):
                 print(dist, single_problems[i]['pipeline_2'][a], single_problems[i]['pipeline_2'][b])  # prints distance, and both sequences
             if maxd < dist:  # to figure out maximum distance for problem
                 maxd = dist
-            similarity = 1000. if dist == 0 else 1./dist 
+            similarity = dist2sim(dist)
             G.add_edge(node_labels[a], node_labels[b], weight=similarity)
     if performer2watch:  # performer2watch used as an analysis flag, see above
         print("Maximum distance:", maxd)
