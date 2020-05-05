@@ -16,6 +16,9 @@ with open("translators.pickle", "rb") as f:
 
 all_characters_list = [chr(k) for k in range(0x21, 0x7f)]
 all_characters_string = ''.join(all_characters_list)
+hex_digits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f']
+hex2 = [h1+h0 for h1 in hex_digits for h0 in hex_digits]
+ma_alphabets = [h for h in hex2 if h not in {'00', '3e', '3d', '3c', '2d', '20', '0d', '0a'} ]
 
 trans_pipeline_id_num = {pipelines[i]['pipeline'] : i for i in range(len(pipelines))}  # Converts id to num
 
@@ -38,8 +41,13 @@ for u_problem in u_problems:
             for (primitive2, primitive1) in zip(list2_primitives_used_for_problem, all_characters_list[:n_primitives_used_for_problem])}
     trans12 = {primitive1 : primitive2
             for (primitive2, primitive1) in zip(list2_primitives_used_for_problem, all_characters_list[:n_primitives_used_for_problem])}
+    trans2h = {primitive2 : primitiveh
+            for (primitive2, primitiveh) in zip(list2_primitives_used_for_problem, ma_alphabets[:n_primitives_used_for_problem])}
+    transh2 = {primitiveh : primitive2
+            for (primitive2, primitiveh) in zip(list2_primitives_used_for_problem, ma_alphabets[:n_primitives_used_for_problem])}
     # u_problem is problem type
     list1_pipelines = [''.join(translator(pipeline2.split('-'), trans21)) for pipeline2 in list2_pipelines]
+    listh_pipelines = [' '.join(translator(pipeline2.split('-'), trans2h)) for pipeline2 in list2_pipelines]
     list_ids_pipelines = [ident for ident in problems_one_type['pipeline']]
     list_nums_pipelines = [trans_pipeline_id_num[ident] for ident in problems_one_type['pipeline']]
     list_performers_pipelines = [performer for performer in problems_one_type['performer']]
@@ -49,8 +57,11 @@ for u_problem in u_problems:
             lev_dist[i,j] = distance(list1_pipelines[i], list1_pipelines[j]) 
     problem_dictionary = {'type': u_problem,
             'all_primitives_used': string2_primitives_used_for_problem,
+            'translator2h': trans2h,
+            'translatorh2': transh2,
             'translator21': trans21,
             'translator12': trans12,
+            'pipeline_h': listh_pipelines,
             'pipeline_1': list1_pipelines,
             'pipeline_2': list2_pipelines,
             'pipeline_num': list_nums_pipelines,
