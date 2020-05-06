@@ -131,3 +131,5 @@ dmypy.json
 # ADDED SGC:
 *.pickle
 *.pdf
+*.hex
+*.ASCII
