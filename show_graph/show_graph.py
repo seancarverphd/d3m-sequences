@@ -40,7 +40,7 @@ def show_Gpos(G, pos, cols):
     nx.draw(G, pos, node_color=cols, with_labels=True, edgelist=[])
     plt.show()
 
-def show_one(i):
-    G, pos, cols = compute_one(i)
+def show_one(i, seed=None):
+    G, pos, cols = compute_one(i, seed)
     show_Gpos(G, pos, cols)
 
