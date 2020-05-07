@@ -9,7 +9,7 @@ import networkx as nx
 with open("single_problem_data.pickle", "rb") as f:
     single_problems = pickle.load(f)
 
-performer_colors = {'cmu':'red', 'isi':'orange', 'mit':'yellow', 'nyu':'green', 'nyu_2':'blue', 'sri':'purple', 'tamu':'grey', 'ucb':'brown', 'uncharted':'pink'}
+performer_colors = {'cmu':'red', 'isi':'darkorange', 'mit':'gold', 'nyu':'green', 'nyu_2':'blue', 'sri':'purple', 'tamu':'darkslategrey', 'ucb':'brown', 'uncharted':'deeppink'}
 
 
 def dist2sim(dist):
