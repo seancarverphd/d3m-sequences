@@ -49,4 +49,5 @@ def print_one(i, seed=None, fname='fig'):
     matplotlib.use('Agg')  # plt.ioff()
     show_one(i, seed)
     plt.savefig(fname+'.eps', format='eps')
+    plt.close('all')
 
