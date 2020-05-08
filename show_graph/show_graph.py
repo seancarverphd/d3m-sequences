@@ -1,3 +1,4 @@
+import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np 
 import pandas as pd
@@ -43,4 +44,9 @@ def show_Gpos(G, pos, cols):
 def show_one(i, seed=None):
     G, pos, cols = compute_one(i, seed)
     show_Gpos(G, pos, cols)
+
+def print_one(i, seed=None, fname='fig'):
+    matplotlib.use('Agg')  # plt.ioff()
+    show_one(i, seed)
+    plt.savefig(fname+'.eps', format='eps')
 
