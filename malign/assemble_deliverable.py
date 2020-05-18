@@ -9,8 +9,10 @@ print([sp[k]['type'] for k in st])
 
 file_list = ["outma"+str(k)+".pdf" for k in st]
 
+writeup = "../writeup/pipelines_in_problems.pdf"
+
 files = ' '.join(file_list)
 
-os.system("gs -dBATCH -dNOPAUSE -q -sDEVICE=pdfwrite -sOutputFile=deliverable.pdf " + files + " primitive_list.pdf") 
+os.system("gs -dBATCH -dNOPAUSE -q -sDEVICE=pdfwrite -sOutputFile=deliverable.pdf " + writeup + " " + files + " primitive_list.pdf") 
 
 
