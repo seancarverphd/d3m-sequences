@@ -13,7 +13,7 @@ def transform(inp,outp):
     hex2 = [h1+h0 for h1 in hex_digits for h0 in hex_digits]
     ma_alphabets = [h for h in hex2 if h not in {'00', '3e', '3d', '3c', '2d', '20', '0d', '0a'} ]
 
-    with open(inp, "rb") as f:
+    with open(inp, "rb") as f:  # inp = "problems.pickle" by default
         problems = pickle.load(f)
 
     n_primitives = []
@@ -88,7 +88,7 @@ def transform(inp,outp):
     print("Max number of primitives:", max(n_primitives))
     print(len(all_characters_string), "Characters in Alphabet Set:", all_characters_string)
 
-    with open(outp, "wb") as f:
+    with open(outp, "wb") as f:  # outp = "single_problem_data.pickle" by default
         pickle.dump(problems_data, f)
 
 transform("problems.pickle", "single_problem_data.pickle")
