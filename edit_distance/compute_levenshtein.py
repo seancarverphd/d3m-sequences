@@ -27,6 +27,8 @@ problems_data = []
 
 unique_problems = set(problems['problem']) 
 u_problems = list(unique_problems)
+u_problems.sort()
+prob_num = 0
 for u_problem in u_problems:
     problems_one_type = problems[problems['problem'] == u_problem]
     # The numbers '2' and '1', below, denote the number of bytes per alphabet in sequences.
@@ -52,9 +54,25 @@ for u_problem in u_problems:
     list_nums_pipelines = [trans_pipeline_id_num[ident] for ident in problems_one_type['pipeline']]
     list_performers_pipelines = [performer for performer in problems_one_type['performer']]
     lev_dist = np.zeros([len(list1_pipelines), len(list1_pipelines)])
+    node0pair = []
+    node1pair = []
+    performer0pair = []
+    performer1pair = []
+    distancepair = []
+    if prob_num == 0: print(u_problem, list_nums_pipelines)
+    prob_num += 1
     for i in range(len(list1_pipelines)):
         for j in range(len(list1_pipelines)):
             lev_dist[i,j] = distance(list1_pipelines[i], list1_pipelines[j]) 
+            if j > i:
+                node0pair.append(list_nums_pipelines[i])
+                node1pair.append(list_nums_pipelines[j])
+                performer0pair.append(list_performers_pipelines[i])
+                performer1pair.append(list_performers_pipelines[j])
+                distancepair.append(lev_dist[i,j])
+    pairs_df = pd.DataFrame({'node0': node0pair, 'node1': node1pair, 
+        'performers0': performer0pair, 'performers1': performer1pair,
+        'distance': distancepair})
     problem_dictionary = {'type': u_problem,
             'all_primitives_used': string2_primitives_used_for_problem,
             'translator2h': trans2h,
@@ -67,7 +85,8 @@ for u_problem in u_problems:
             'pipeline_num': list_nums_pipelines,
             'pipeline_ids': list_ids_pipelines,
             'performers': list_performers_pipelines,
-            'distances': lev_dist}
+            'distances': lev_dist,
+            'pairs': pairs_df}
     problems_data.append(problem_dictionary)
     n_primitives.append(n_primitives_used_for_problem)
 
