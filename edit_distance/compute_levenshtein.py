@@ -6,13 +6,8 @@ from Levenshtein import distance
 def translator(inp, trans):
     return [trans[x] for x in inp]
 
-with open("pipelines.pickle", "rb") as f:
-    pipelines = pickle.load(f)
 with open("problems.pickle", "rb") as f:
     problems = pickle.load(f)
-with open("translators.pickle", "rb") as f:
-    c2i = pickle.load(f)
-    i2c = pickle.load(f)
 
 all_characters_list = [chr(k) for k in range(0x21, 0x7f)]
 all_characters_string = ''.join(all_characters_list)
@@ -20,11 +15,8 @@ hex_digits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', '
 hex2 = [h1+h0 for h1 in hex_digits for h0 in hex_digits]
 ma_alphabets = [h for h in hex2 if h not in {'00', '3e', '3d', '3c', '2d', '20', '0d', '0a'} ]
 
-trans_pipeline_id_num = {pipelines[i]['pipeline'] : i for i in range(len(pipelines))}  # Converts id to num
-
 n_primitives = []
 problems_data = []
-
 unique_problems = set(problems['problem']) 
 u_problems = list(unique_problems)
 u_problems.sort()
@@ -51,7 +43,7 @@ for u_problem in u_problems:
     list1_pipelines = [''.join(translator(pipeline2.split('-'), trans21)) for pipeline2 in list2_pipelines]
     listh_pipelines = [' '.join(translator(pipeline2.split('-'), trans2h)) for pipeline2 in list2_pipelines]
     list_ids_pipelines = [ident for ident in problems_one_type['pipeline']]
-    list_nums_pipelines = [trans_pipeline_id_num[ident] for ident in problems_one_type['pipeline']]
+    list_nums_pipelines = list(problems_one_type['num'])
     list_performers_pipelines = [performer for performer in problems_one_type['performer']]
     lev_dist = np.zeros([len(list1_pipelines), len(list1_pipelines)])
     node0pair = []
