@@ -1,0 +1,43 @@
+\documentclass{article}
+\title{Various Measures of Pipeline Diversity}
+\author{Data Machines Corporation}
+
+\begin{document}
+\maketitle
+
+Here we consider and compare various measures of pipeline diversity.
+We assume a pipeline is a sequence of one or more primitives.
+Diversity means diverstiy in the sequence chosen, and it is the
+diversity within one collection, compared to another.  Ususally the
+collections are defined by the performer.
+
+Consider the following scenarios.
+
+\begin{enumerate}
+\item 
+  Performer X1 submits pipelines A and B differing by 20 substitutions.
+\item
+  Performer X2 submits pipelines C1 through C20 all differing by 1
+  substituion from each other.
+\item
+  Performer X3 submits pipelines A1 through A19 with identical
+  sequences and B differing by 20 from the A's.
+\item
+  Performer X4 submits pipelines A1 through A10 and B1 through B10,
+  where the A's differ from the B's by 20 but within each letter they
+  are identical sequences.
+\item
+  Performer X5 submits 20 different pipelines each with a successive
+  substution in a different position.
+\end{enumerate}
+
+\begin{tabular}{lcccc}
+  Performer & ``$L_0$'' & $L_1$ & $L_2$ & $L_\infty$ \\
+  \hline
+  X1 & 1 & 20 & 20 & 20 \\
+  X2 & 190 & 20 & & 1 \\
+  X3 & 19 & & & 20 \\
+  X4 & 100 & & & 20 \\
+  X5 & 190 & & & 20
+\end{tabular}
+\end{document}
