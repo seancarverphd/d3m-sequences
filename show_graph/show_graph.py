@@ -21,6 +21,7 @@ def compute_one(i, seed=None, performer2watch=None):
     maxd = 0
     node_labels = single_problems[i]['pipeline_num']
     n_nodes = len(node_labels)
+    n_edges_left = n_nodes*(n_nodes-1)/2
     G.add_nodes_from(node_labels)
     cols = [performer_colors[k] for k in single_problems[i]['performers']]
     for a in range(n_nodes-1):  # looping over all unique pairs of nodes
@@ -32,9 +33,11 @@ def compute_one(i, seed=None, performer2watch=None):
                 maxd = dist
             similarity = dist2sim(dist)
             G.add_edge(node_labels[a], node_labels[b], weight=similarity)
+            n_edges_left -= 1
+    assert n_edges_left == 0
     if performer2watch:  # performer2watch used as an analysis flag, see above
         print("Maximum distance:", maxd)
-    pos = nx.spring_layout(G, seed=seed)
+    pos = nx.spring_layout(G, seed=seed, iterations=1000)
     return G, pos, cols
 
 def show_Gpos(G, pos, cols):
