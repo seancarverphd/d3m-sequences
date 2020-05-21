@@ -122,7 +122,7 @@ print(n_pipelines, "Pipelines")
 print(n_primitives, "Primitives")
 print(len(primitive_set), "Unique Primitives")
 
-df_problem = pd.DataFrame({'problem': problem_col, 'performer': performer_col, 'pipeline': pipeline_col, 'sequence': sequence_col})
+df_problem = pd.DataFrame({'problem': problem_col, 'performer': performer_col, 'pipeline': pipeline_col, 'sequence': sequence_col, 'num': range(len(problem_col))})
 
 # Assert that counts haven't changed so can investigate if they have
 assert len(performers) == 10
