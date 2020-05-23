@@ -1,43 +1,78 @@
 \documentclass{article}
-\title{Various Measures of Pipeline Diversity}
+\title{Measuring Pipeline Diversity}
 \author{Data Machines Corporation}
 
 \begin{document}
 \maketitle
 
-Here we consider and compare various measures of pipeline diversity.
-We assume a pipeline is a sequence of one or more primitives.
-Diversity means diverstiy in the sequence chosen, and it is the
-diversity within one collection, compared to another.  Ususally the
-collections are defined by the performer.
+If a pipeline is sequence of primitives, how do we quantify the
+diversity of a collection of pipelines, in terms of its primitives?
+We have to decide what we mean by diversity.  Is a collection of only
+two pipelines very diverse if all their primitives are different?  How
+about a collection of many pipelines that differ in only one
+primitive---is that more or less diverse?
 
-Consider the following scenarios.
+The use the Levenshtein edit distance between pairs of pipelines gives
+us a number describing the difference (diversity) between the pairs of
+pipelines, in terms of primitives.
 
+What about a collection?  We have a different edit distance for each
+of $N$ pairs in the collection.  We put these $N$ numbers into a
+vector $v$ of length $N$---the quantity $N$ is related to the number
+of pipelines, $n$, by $N = \frac{(n)(n-1)}{2}$.
+
+As a first idea, we can take the sum or average of the components of
+this vector.  The sum is simply the $L_1$ norm (see below) because all
+components are non-negative.  We can generalize this to the $L_p$ norm
+for any $p$.
+$$L_p(v) = \left(|v_1|^p + |v_2|^p + \dots
+|v_N|^p\right)^\frac{1}{p}.$$ What about generalizing the averages?
+$$M_p(v) = \frac{L_p(v)}{N}.$$ The quantities $L_p(v)$ and $M_p(v)$
+are is defined for all $0 < p < \infty$ but $L_p(v)$ satisfies the
+properties of a norm only for $p \geq 1$. Two limits can be considered
+for $L$ and by extention $M$ (the second is not really a limit nor is
+it a norm, but is often used).
+$$L_\infty(v) = \max\left\{|v_1|, |v_2|, \dots, |v_N|\right\}$$
+$$L_0(v) = \mbox{the number of non-zero elements of $v$}.$$
+
+\newpage
+\section{Synthetic Scenarios}
+
+Now we test these measures on synthetic data.  Consider the following
+scenarios.  All pipelines below have 10 unique primitives.
 \begin{enumerate}
 \item 
-  Performer X1 submits pipelines A and B differing by 20 substitutions.
+  Performer X submits only 2 pipelines---differing by 10 substitutions.
 \item
-  Performer X2 submits pipelines C1 through C20 all differing by 1
-  substituion from each other.
+  Performer Y submits 6 pipelines all differing from each other by 10
+  substitutions.
 \item
-  Performer X3 submits pipelines A1 through A19 with identical
-  sequences and B differing by 20 from the A's.
+  Performer Z submits 5 identical pipelines plus 1 additional pipeline
+  differing from all the rest by 10 substitutions.
 \item
-  Performer X4 submits pipelines A1 through A10 and B1 through B10,
-  where the A's differ from the B's by 20 but within each letter they
-  are identical sequences.
+  Performer W submits 2 sets of 3 identical pipelines differing by 10
+  substutions between groups.
 \item
-  Performer X5 submits 20 different pipelines each with a successive
-  substution in a different position.
+  Performer U submits a sequence of pipelines differing from each
+  other by a number of substitions equal to the absolute value of the
+  relative position in the sequence.
+\item
+  Performer V submits a sequence of pipelines all differing from each
+  other by a single substitution.
 \end{enumerate}
 
-\begin{tabular}{lcccc}
-  Performer & ``$L_0$'' & $L_1$ & $L_2$ & $L_\infty$ \\
-  \hline
-  X1 & 1 & 20 & 20 & 20 \\
-  X2 & 190 & 20 & & 1 \\
-  X3 & 19 & & & 20 \\
-  X4 & 100 & & & 20 \\
-  X5 & 190 & & & 20
-\end{tabular}
+\section{Relative Orderings}
+
+\begin{eqnarray}
+  L_1 & : & Y > W > Z > U > V > X \\
+  L_2 & : & Y > W > Z > U > X > V \\
+  L_3 & : & Y > W > Z > X > U > V \\
+  L_\infty & : & Y = W = Z = X > U > V \\
+  L_0 & : & Y = U = V > W > Z > X \\
+  M_1 & : & X = Y > W > Z > U > V \\
+  M_2 & : & X > Y > W > Z > U > V \\
+  M_3 & : & X > Y > W > Z > U > V \\
+  M_\infty & : & X > Y = W = Z > U > V \\
+  M_0 & : & X = Y = U > V > W > Z 
+\end{eqnarray}
 \end{document}

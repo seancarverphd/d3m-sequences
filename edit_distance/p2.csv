@@ -1,0 +1,33 @@
+problem,performer,pipeline,sequence,num,comments
+pb1,X,p0,AA-AB-AC-AD-AE-AF-AG-AH-AI-AJ,0,X has 2 pipelines at distance 10
+pb1,X,p1,BA-BB-BC-BD-BE-BF-BG-BH-BI-BJ,1,
+pb1,Y,p2,AA-AB-AC-AD-AE-AF-AG-AH-AI-AJ,2,Y has 6 pipelines all distance 10
+pb1,Y,p3,BA-BB-BC-BD-BE-BF-BG-BH-BI-BJ,3,
+pb1,Y,p4,CA-CB-CC-CD-CE-CF-CG-CH-CI-CJ,4,
+pb1,Y,p5,DA-DB-DC-DD-DE-DF-DG-DH-DI-DJ,5,
+pb1,Y,p6,EA-EB-EC-ED-EE-EF-EG-EH-EI-EJ,6,
+pb1,Y,p7,FA-FB-FC-FD-FE-FF-FG-FH-FI-FJ,7,
+pb1,Z,p8,AA-AB-AC-AD-AE-AF-AG-AH-AI-AJ,8,Z has 5 identical plus one extra at distance 10
+pb1,Z,p9,AA-AB-AC-AD-AE-AF-AG-AH-AI-AJ,9,
+pb1,Z,p10,AA-AB-AC-AD-AE-AF-AG-AH-AI-AJ,10,
+pb1,Z,p11,AA-AB-AC-AD-AE-AF-AG-AH-AI-AJ,11,
+pb1,Z,p12,AA-AB-AC-AD-AE-AF-AG-AH-AI-AJ,12,
+pb1,Z,p13,BA-BB-BC-BD-BE-BF-BG-BH-BI-BJ,13,
+pb1,W,p14,AA-AB-AC-AD-AE-AF-AG-AH-AI-AJ,14,"W has 3 and 3 identical pipelines, groups at distance 10"
+pb1,W,p15,AA-AB-AC-AD-AE-AF-AG-AH-AI-AJ,15,
+pb1,W,p16,AA-AB-AC-AD-AE-AF-AG-AH-AI-AJ,16,
+pb1,W,p17,BA-BB-BC-BD-BE-BF-BG-BH-BI-BJ,17,
+pb1,W,p18,BA-BB-BC-BD-BE-BF-BG-BH-BI-BJ,18,
+pb1,W,p19,BA-BB-BC-BD-BE-BF-BG-BH-BI-BJ,19,
+pb1,U,p20,AA-AB-AC-AD-AE-AF-AG-AH-AI-AJ,20,U has a sequence of pipelines that differ in successive primitives
+pb1,U,p21,BA-AB-AC-AD-AE-AF-AG-AH-AI-AJ,21,
+pb1,U,p22,BA-BB-AC-AD-AE-AF-AG-AH-AI-AJ,22,
+pb1,U,p23,BA-BB-BC-AD-AE-AF-AG-AH-AI-AJ,23,
+pb1,U,p24,BA-BB-BC-BD-AE-AF-AG-AH-AI-AJ,24,
+pb1,U,p25,BA-BB-BC-BD-BE-AF-AG-AH-AI-AJ,25,
+pb1,V,p26,AA-AB-AC-AD-AE-AF-AG-AH-AI-AJ,26,V has 6 pipelines all a distance 1
+pb1,V,p27,BA-AB-AC-AD-AE-AF-AG-AH-AI-AJ,27,
+pb1,V,p28,CA-AB-AC-AD-AE-AF-AG-AH-AI-AJ,28,
+pb1,V,p29,DA-AB-AC-AD-AE-AF-AG-AH-AI-AJ,29,
+pb1,V,p30,EA-AB-AC-AD-AE-AF-AG-AH-AI-AJ,30,
+pb1,V,p31,FA-AB-AC-AD-AE-AF-AG-AH-AI-AJ,31,
