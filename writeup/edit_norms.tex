@@ -25,7 +25,7 @@ As a first idea, we can take the sum or average of the components of
 this vector.  The sum is simply the $L_1$ norm (see below) because all
 components are non-negative.  We can generalize this to the $L_p$ norm
 for any $p$.
-$$L_p(v) = \left(|v_1|^p + |v_2|^p + \dots
+$$L_p(v) = \left(|v_1|^p + |v_2|^p + \dots +
 |v_N|^p\right)^\frac{1}{p}.$$ What about generalizing the averages?
 $$M_p(v) = \frac{L_p(v)}{N}.$$ The quantities $L_p(v)$ and $M_p(v)$
 are is defined for all $0 < p < \infty$ but $L_p(v)$ satisfies the
@@ -47,11 +47,11 @@ scenarios.  All pipelines below have 10 unique primitives.
   Performer Y submits 6 pipelines all differing from each other by 10
   substitutions.
 \item
-  Performer Z submits 5 identical pipelines plus 1 additional pipeline
-  differing from all the rest by 10 substitutions.
-\item
   Performer W submits 2 sets of 3 identical pipelines differing by 10
   substutions between groups.
+\item
+  Performer Z submits 5 identical pipelines plus 1 additional pipeline
+  differing from all the rest by 10 substitutions.
 \item
   Performer U submits a sequence of pipelines differing from each
   other by a number of substitions equal to the absolute value of the
@@ -73,6 +73,37 @@ scenarios.  All pipelines below have 10 unique primitives.
   M_2 & : & X > Y > W > Z > U > V \\
   M_3 & : & X > Y > W > Z > U > V \\
   M_\infty & : & X > Y = W = Z > U > V \\
-  M_0 & : & X = Y = U > V > W > Z 
+  M_0 & : & X = Y = U = V > W > Z 
 \end{eqnarray}
+
+\section{Discussion}
+Notice that all 10 measures agree that:
+$$Y \geq W \geq Z \geq U \geq V$$
+If you look back at the scenario, this ordering makes sense.
+
+Now notice that the position of $X$ is very variable throughout the
+measures.  What is different about X?  Notice that the collections $Y,
+W, Z, U, \mbox{and } V$ all had six pipelines whereas $X$ had but two.
+We can surmise that the differences in the measures appear largely
+across collections of different sizes.
+
+Note that the following orderings don't make sense:
+$$X > Y$$
+$$X > W$$
+$$X > Z$$ Why?  Because all of $Y$, $W$, and $Z$ contain a pair of
+distance 10 pipelines, plus additional pairs at nonzero distance
+whereas X contains just one pair at distance 10.  Clearly $X$ should
+be deemed less diverse than $Y$, $W$, and $Z$.  That said, all 5 of
+the $M$ measures break at least one of these orderings, whereas none
+of the $L$ measures do.
+
+Of the 5 remaining measures $L_\infty$ and $L_0$ both lead to a lot of
+equalities which may not be desireable.  The other three meausures all
+place $X$ in a different relative position to $U > V$.  The higher the
+value of $p$, the more collections of fewer pipelines that are more
+distant are deemed more diverse than collections with more pipelines
+that are separated but less distant.
+
+\section{Future work}
+It would be interesting to probe this statement further.
 \end{document}
