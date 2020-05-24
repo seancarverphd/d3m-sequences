@@ -123,8 +123,12 @@ Performer T submits $n$ pipelines and $N$ pairs, where $N = n (n-1) /
 and $T$ have the same numbers of pipelines/pairs if $n = k+1$.  T is
 the same as V with $e = 1$, $n = 6$, and $N = 15$.
 
-\begin{tabular}{cccc}
+Both S and T have simple formulas for the measures, coming from their
+simple structures.  The formulas are displayed in the following table:
+
+\begin{tabular}{c|ccc}
   performer & $L_1$ & $L_2$ & $L_\infty$ \\
+\hline
   S & $dk$ & $d \sqrt{k}$ & $d$ \\
   T & $eN$ & $e \sqrt{N}$ & $e$
 \end{tabular}
@@ -132,19 +136,21 @@ the same as V with $e = 1$, $n = 6$, and $N = 15$.
 Filling in the values of these measures for the parameters that define
 $Z$ and $V$, we find
 
-\begin{tabular}{cccc}
+\begin{tabular}{c|ccc}
   performer & $L_1$ & $L_2$ & $L_\infty$ \\
+\hline
   Z & $50$ & $22.36$ & $10$ \\
   V & $15$ & $3.87$ & $1$
 \end{tabular}
 
-This reproduces the consistent ordering.
+This table reproduces the consistent ordering found above.
 
 Now reparameterize so that $d = 10$, $k = 10$, $e = 2$, $n = 11$, and
 $N = 55$. Then the values for these measures transform to:
 
-\begin{tabular}{cccc}
+\begin{tabular}{c|ccc}
   performer & $L_1$ & $L_2$ & $L_\infty$ \\
+  \hline
   S & $100$ & $31.62$ & $10$ \\
   T & $110$ & $14.83$ & $2$
 \end{tabular}
@@ -160,5 +166,9 @@ Perhaps we can report $L_1$, $L_2$, and $L_\infty$ as three relevant
 measures describing diversity.  All of these measures have natural
 interpretations.  Many times, all three proposed measures will agree,
 as it was hard to find the counterexample above.
+
+If I had to pick one measure to use consistently, without the others,
+it would be $L_2$ because it is a natural balance between the two
+extremes.
 
 \end{document}
