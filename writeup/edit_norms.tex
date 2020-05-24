@@ -104,6 +104,61 @@ value of $p$, the more collections of fewer pipelines that are more
 distant are deemed more diverse than collections with more pipelines
 that are separated but less distant.
 
-\section{Future work}
-It would be interesting to probe this statement further.
+\section{Counterexample}
+Because all same-sized collections chosen for the examples above have
+a consistent ordering under the norms, it becomes natural to wonder if
+same-sized collections are always ordered the same way regardless of
+the normed used.
+
+This property does \emph{not} hold as the following counterexample
+shows:
+
+Performer S submits $k$ identical pipelines plus one additional
+pipeline at distance $d$.  There are $k+1$ pipelines and $k (k+1)/2$
+pairs, of which $k$ pairs have distance $d$ and the rest have distance
+0.  S is the same as $Z$ with $k = 5$ and $d = 10$.
+
+Performer T submits $n$ pipelines and $N$ pairs, where $N = n (n-1) /
+2$.  All of these pipelines have distance $e$ from each other.  $S$
+and $T$ have the same numbers of pipelines/pairs if $n = k+1$.  T is
+the same as V with $e = 1$, $n = 6$, and $N = 15$.
+
+\begin{tabular}{cccc}
+  performer & $L_1$ & $L_2$ & $L_\infty$ \\
+  S & $dk$ & $d \sqrt{k}$ & $d$ \\
+  T & $eN$ & $e \sqrt{N}$ & $e$
+\end{tabular}
+
+Filling in the values of these measures for the parameters that define
+$Z$ and $V$, we find
+
+\begin{tabular}{cccc}
+  performer & $L_1$ & $L_2$ & $L_\infty$ \\
+  Z & $50$ & $22.36$ & $10$ \\
+  V & $15$ & $3.87$ & $1$
+\end{tabular}
+
+This reproduces the consistent ordering.
+
+Now reparameterize so that $d = 10$, $k = 10$, $e = 2$, $n = 11$, and
+$N = 55$. Then the values for these measures transform to:
+
+\begin{tabular}{cccc}
+  performer & $L_1$ & $L_2$ & $L_\infty$ \\
+  S & $100$ & $31.62$ & $10$ \\
+  T & $110$ & $14.83$ & $2$
+\end{tabular}
+
+Note the measures $L_1$ and $L_2$ reversed the ordering of the
+diversity of collections S and T.
+
+\section{Conclusion}
+Consistent with the story we saw above, higher values of $p$ deem
+fewer larger edit distances as more diverse than a greater number of
+smaller edit distances.  There is no one single measure of diversity.
+Perhaps we can report $L_1$, $L_2$, and $L_\infty$ as three relevant
+measures describing diversity.  All of these measures have natural
+interpretations.  Many times, all three proposed measures will agree,
+as it was hard to find the counterexample above.
+
 \end{document}
