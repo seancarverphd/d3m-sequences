@@ -189,8 +189,8 @@ Collection S would seem to be the least diverse, but there is
 something to prove here.  If there are 3 pipelines, $a$, $b$, and $c$,
 where $a$ and $c$ are at maximal distance $d$, and the other pairs are
 at less or equal distance, is it really true that minimal diversity is
-acheived by placing $b$ at $a$ or placing by placing $b$ at $c$,
-leaving two pairs with distance $d$, and one pair with distance 0?
+acheived by placing $b$ at $a$ or by placing $b$ at $c$, leaving two
+pairs with distance $d$, and one pair with distance 0?
 
 Note that (for $L_1$ minimality) we want to show that for all
 pipelines $b$:
@@ -233,15 +233,17 @@ because the two values of $d$ were different: $d \neq e$.
 
 Consistent with the story we saw above, higher values of $p$ deem
 fewer larger edit distances as more diverse than a greater number of
-smaller edit distances.  There is no one single measure of diversity.
-Perhaps we can report $L_1$, $L_2$, and $L_\infty$ as three relevant
-measures describing diversity.  All of these measures have natural
-interpretations.  Many times, all three proposed measures will agree,
-as it was hard to find the counterexample above.
+smaller edit distances.  On the other hand, the reverse is true for
+lower values of $p$.  Thus, jiving with intuition, there is no one
+single measure of diversity.  Perhaps we can report $L_1$, $L_2$, and
+$L_\infty$ as three relevant measures describing diversity.  All of
+these measures have natural interpretations.  Many times, all three
+proposed measures will agree, as it was hard to find the
+counterexample above.
 
 If I had to pick one measure to use consistently, without the others,
 it would be $L_2$ because it is a natural balance between the two
-extremes.  This is the unique norm whose upper bound grows linearly
-with $n$.
+extremes.  This is the unique norm whose tight upper bound grows
+linearly with $n$.
 
 \end{document}
