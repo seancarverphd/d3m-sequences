@@ -26,7 +26,11 @@ this vector.  The sum is simply the $L_1$ norm (see below) because all
 components are non-negative.  We can generalize this to the $L_p$ norm
 for any $p$.
 $$L_p(v) = \left(|v_1|^p + |v_2|^p + \dots +
-|v_N|^p\right)^\frac{1}{p}.$$ What about generalizing the averages?
+|v_N|^p\right)^\frac{1}{p}.$$ Each component $v_i$ represents the edit
+distance between a single pair of pipelines; since this quantity is
+always positive, the absolute values are not necessary.
+
+What about generalizing the averages?  How about:
 $$M_p(v) = \frac{L_p(v)}{N}.$$ The quantities $L_p(v)$ and $M_p(v)$
 are is defined for all $0 < p < \infty$ but $L_p(v)$ satisfies the
 properties of a norm only for $p \geq 1$. Two limits can be considered
@@ -210,7 +214,8 @@ Now let's collect and review the results in the new notation placing
 bounds on an arbitrary collection C with parameters $d$ and $n$.
 
 $$ d \sqrt[p]{n-1} \leq L_p(\mbox{C}) \leq d \sqrt[p]{(n)(n-1)/2} $$
-Equality hold for the extreme cases, S and T, for lower and upper bound.
+Equality hold for the extreme cases, S and T, for lower and upper
+bounds, respectively.
 
 Put more compactly,
 
