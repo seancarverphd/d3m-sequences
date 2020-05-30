@@ -13,6 +13,10 @@ problem_col = []
 performer_col = []
 pipeline_col = []
 sequence_col = []
+metric_col = []
+value_col = []
+normalized_col = []
+randomSeed_col = []
 fewer_performers = 0
 n_submissions = 0
 n_pipelines = 0
@@ -26,6 +30,8 @@ problems_that_failed_to_load_metadata = set()
 
 debug = 0
 delta_unique_submissions = []
+cannotopenscores = 0
+cannotloadscores = 0
 
 performers = os.listdir(config.data_home)
 for performer in performers:
@@ -59,8 +65,30 @@ for performer in performers:
                 continue  # next file in pipeline directory
             else:
                 assert pipeline[-4:] == 'json'
+                score_filename = config.data_home + performer + '/' + problem + '/' + often_just_one[0] + '/EVALUATION/score/' + pipeline[:-4] + "score.csv"
+                try:  # load scores 
+                    f = open(score_filename)
+                except:
+                    print('Cannot open file.  Does not exist?  ' + config.data_home + performer + '/' + problem + '/' + often_just_one[0] + '/EVALUATION/score/' + pipeline[:-4] + "score.csv")
+                    cannotopenscores += 1
+                    continue
+                try:
+                    score_df = pd.read_csv(f)
+                except:
+                    print('Cannot load csv file.  Empty?  ' + config.data_home + performer + '/' + problem + '/' + often_just_one[0] + '/EVALUATION/score/' + pipeline[:-4] + "score.csv")
+                    cannotloadscores += 1
+                    continue
+                f.close()
+                # Parse Scores
+                assert(len(score_df)==1)
+                metric_col = score_df['metric'][0]
+                value_col = score_df['value'][0]
+                normalized_col = score_df['normalized'][0]
+                randomSeed_col = score_df['randomSeed'][0]
+                # Load pipeline json without scores
                 with open(config.data_home + performer + '/' + problem + '/' + often_just_one[0] + '/EVALUATION/pipelines_ranked/' + pipeline) as f:
                     d = json.load(f)  # parse pipeline json
+                # Parse pipeline json
                 list_of_step_ids = []
                 list_of_names = []
                 # Create ids and names of primitives
@@ -69,7 +97,8 @@ for performer in performers:
                 for step in d['steps']:
                     list_of_names.append(step['primitive']['name'])
                 # Create dictionary for pipeline
-                pipeline_list.append({'pipeline' : d['id'], 'keywords' : keywords, 'primitives' : list_of_step_ids, 'names' : list_of_names})
+                pipeline_list.append({'pipeline': d['id'], 'keywords': keywords, 'primitives': list_of_step_ids, 'names': list_of_names,
+                    'metric': metric_col, 'value': value_col, 'normalized': normalized_col, 'randomSeed': randomSeed_col, 'score_filename': score_filename})
                 # Update list of unique IDs
                 primitive_set = primitive_set.union(set(list_of_step_ids))
                 # Update df_problem
@@ -80,7 +109,6 @@ for performer in performers:
                 # Update counts
                 n_pipelines += 1
                 n_primitives += len(d['steps'])
-
 # Create list of letters
 caps_string = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 caps_list = [char for char in caps_string]
@@ -121,15 +149,20 @@ print("All", len(delta_unique_submissions), "Unique:", all([x == 1 for x in delt
 print(n_pipelines, "Pipelines")
 print(n_primitives, "Primitives")
 print(len(primitive_set), "Unique Primitives")
+print(1, "Maximum number of scores")
+print(cannotloadscores, "Score failed to load.  File exists but empty?")
+print(cannotopenscores, "Score failed to open.  File does not exist?")
 
 df_problem = pd.DataFrame({'problem': problem_col, 'performer': performer_col, 'pipeline': pipeline_col, 'sequence': sequence_col, 'num': range(len(problem_col))})
 
 # Assert that counts haven't changed so can investigate if they have
 assert len(performers) == 10
 assert n_submissions == 954  # one less without tamu_2
-assert n_pipelines == 9671  # without 1 for tamu_2 and 27 load failures would be 9910
-assert n_primitives == 109201  # without 26 primitives from tamu_2 and the primitives in 27 load failures would be 111682
-assert len(primitive_set) == 222  # without 9 primitives unique to tamu_2's pipeline plus unique primitives from the 27 load failues would be 232 
+assert n_pipelines == 9022  # 9671 but some w/no scores; without 1 for tamu_2 and 27 load failures would be 9910
+assert n_primitives == 101216  # 109201 not excluding w/o scores; without 26 primitives from tamu_2 and the primitives in 27 load failures would be 111682
+assert len(primitive_set) == 216  # 222 w/no scores, without 9 primitives unique to tamu_2's pipeline plus unique primitives from the 27 load failues would be 232
+assert cannotloadscores == 639
+assert cannotopenscores == 10
 
 # Dump data
 with open(config.sgt_data, 'wb') as f:
