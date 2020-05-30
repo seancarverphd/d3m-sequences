@@ -6,6 +6,7 @@ import pickle
 import random
 
 import config
+import list_metrics
 
 random.seed(0)
 
@@ -69,13 +70,15 @@ for performer in performers:
                 try:  # load scores 
                     f = open(score_filename)
                 except:
-                    print('Cannot open file.  Does not exist?  ' + config.data_home + performer + '/' + problem + '/' + often_just_one[0] + '/EVALUATION/score/' + pipeline[:-4] + "score.csv")
+                    if cannotopenscores==0:
+                        print('Cannot open file.  Does not exist?  See count below.  First failure: ' + score_filename)
                     cannotopenscores += 1
                     continue
                 try:
                     score_df = pd.read_csv(f)
                 except:
-                    print('Cannot load csv file.  Empty?  ' + config.data_home + performer + '/' + problem + '/' + often_just_one[0] + '/EVALUATION/score/' + pipeline[:-4] + "score.csv")
+                    if cannotloadscores==0:
+                        print('Cannot load csv file.  Empty?  See count below.  First failure: ' + score_filename)
                     cannotloadscores += 1
                     continue
                 f.close()
@@ -98,7 +101,9 @@ for performer in performers:
                     list_of_names.append(step['primitive']['name'])
                 # Create dictionary for pipeline
                 pipeline_list.append({'pipeline': d['id'], 'keywords': keywords, 'primitives': list_of_step_ids, 'names': list_of_names,
-                    'metric': metric_col, 'value': value_col, 'normalized': normalized_col, 'randomSeed': randomSeed_col, 'score_filename': score_filename})
+                    'metric': metric_col, 'value': value_col, 'adjusted_score': -value_col if list_metrics.isCost[metric_col] else value_col,
+                    'normalized': normalized_col, 'randomSeed': randomSeed_col, 'score_filename': score_filename,
+                    'problem': problem, 'performer': performer})
                 # Update list of unique IDs
                 primitive_set = primitive_set.union(set(list_of_step_ids))
                 # Update df_problem
