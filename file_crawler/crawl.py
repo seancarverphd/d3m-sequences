@@ -14,6 +14,11 @@ problem_col = []
 performer_col = []
 pipeline_col = []
 sequence_col = []
+metric_col = []
+value_col = []
+adjusted_score_col = []
+normalized_col = []
+randomSeed_col = []
 fewer_performers = 0
 n_submissions = 0
 n_pipelines = 0
@@ -82,6 +87,7 @@ for performer in performers:
                 assert(len(score_df)==1)
                 metric = score_df['metric'][0]
                 value = score_df['value'][0]
+                adjusted_score = -value if list_metrics.isCost[metric] else value
                 normalized = score_df['normalized'][0]
                 randomSeed = score_df['randomSeed'][0]
                 # Load pipeline json without scores
@@ -97,7 +103,7 @@ for performer in performers:
                     list_of_names.append(step['primitive']['name'])
                 # Create dictionary for pipeline
                 pipeline_list.append({'pipeline': d['id'], 'keywords': keywords, 'primitives': list_of_step_ids, 'names': list_of_names,
-                    'metric': metric, 'value': value, 'adjusted_score': -value if list_metrics.isCost[metric] else value,
+                    'metric': metric, 'value': value, 'adjusted_score': adjusted_score,
                     'normalized': normalized, 'randomSeed': randomSeed, 'score_filename': score_filename,
                     'problem': problem, 'performer': performer})
                 # Update list of unique IDs
@@ -106,6 +112,11 @@ for performer in performers:
                 problem_col.append(problem)
                 performer_col.append(performer)
                 pipeline_col.append(d['id'])
+                metric_col.append(metric)
+                value_col.append(value)
+                adjusted_score_col.append(adjusted_score)
+                normalized_col.append(normalized)
+                randomSeed_col.append(randomSeed)
                 # too slow: df_problem = pd.concat([df_problem, pd.DataFrame([problem, performer, d['id']], index=(['problem', 'performer', 'pipeline']))])
                 # Update counts
                 n_pipelines += 1
@@ -154,7 +165,8 @@ print(1, "Maximum number of scores")
 print(cannotloadscores, "Score failed to load.  File exists but empty?")
 print(cannotopenscores, "Score failed to open.  File does not exist?")
 
-df_problem = pd.DataFrame({'problem': problem_col, 'performer': performer_col, 'pipeline': pipeline_col, 'sequence': sequence_col, 'num': range(len(problem_col))})
+df_problem = pd.DataFrame({'problem': problem_col, 'performer': performer_col, 'pipeline': pipeline_col, 'sequence': sequence_col, 'num': range(len(problem_col)),
+                'metric': metric_col, 'value': value_col, 'adjusted_score': adjusted_score_col, 'normalized': normalized_col, 'randomSeed': randomSeed})
 
 # Assert that counts haven't changed so can investigate if they have
 assert len(performers) == 10

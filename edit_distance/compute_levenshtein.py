@@ -47,6 +47,7 @@ def transform(inp,outp):
         list_ids_pipelines = [ident for ident in problems_one_type['pipeline']]
         list_nums_pipelines = list(problems_one_type['num'])
         list_performers_pipelines = [performer for performer in problems_one_type['performer']]
+        list_adjusted_score_pipelines = [score for score in problems_one_type['adjusted_score']]
         lev_dist = np.zeros([len(list1_pipelines), len(list1_pipelines)])
         node0pair = []
         node1pair = []
@@ -79,6 +80,7 @@ def transform(inp,outp):
                 'pipeline_num': list_nums_pipelines,
                 'pipeline_ids': list_ids_pipelines,
                 'performers': list_performers_pipelines,
+                'adjusted_scores': list_adjusted_score_pipelines,
                 'distances': lev_dist,
                 'pairs': pairs_df}
         problems_data.append(problem_dictionary)
