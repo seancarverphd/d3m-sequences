@@ -4,8 +4,13 @@ import numpy as np
 import pandas as pd
 import pickle
 import random
+import seaborn as sns
+import sys
 
 import networkx as nx
+
+sys.path.insert(1, '/home/sean/Code/d3m-sequences/edit_distance/')
+import edit_norm
 
 with open("single_problem_data.pickle", "rb") as f:
     single_problems = pickle.load(f)
@@ -53,4 +58,23 @@ def print_one(i, seed=None, fname='fig'):
     show_one(i, seed)
     plt.savefig(fname+'.eps', format='eps')
     plt.close('all')
+
+def label_point(x, y, val, ax):
+    a = pd.concat({'x': x, 'y': y, 'val': val}, axis=1)
+    for i, point in a.iterrows():
+        ax.text(point['x']+.02, point['y'], str(point['val']))
+
+norm_metric = 'l2'
+
+def cor_metrics(i):
+    df = edit_norm.multimeasure(prob=i)
+    return df['max_score'].corr(df[norm_metric])
+
+def show_scatter(i):
+    df = edit_norm.multimeasure(prob=i)
+    sns.scatterplot(data=df, x='max_score', y=norm_metric)
+    r = cor_metrics(i)
+    plt.title(edit_norm.problem_name(prob=i) + ': r='+ f'{r:.2f}')
+    plt.xlabel('MAX. ' + edit_norm.adjusted_metric(prob=i))
+    label_point(df.max_score, df[norm_metric], df.index.to_series(), plt.gca())
 

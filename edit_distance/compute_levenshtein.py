@@ -2,6 +2,10 @@ import numpy as np
 import pandas as pd
 import pickle
 from Levenshtein import distance
+import sys
+
+sys.path.insert(1, '/home/sean/Code/d3m-sequences/file_crawler/')
+from list_metrics import isCost
 
 def translator(inp, trans):
     return [trans[x] for x in inp]
@@ -48,6 +52,7 @@ def transform(inp,outp):
         list_nums_pipelines = list(problems_one_type['num'])
         list_performers_pipelines = [performer for performer in problems_one_type['performer']]
         list_adjusted_score_pipelines = [score for score in problems_one_type['adjusted_score']]
+        list_metric_pipelines = ['-'+m if isCost[m] else m for m in problems_one_type['metric']]
         lev_dist = np.zeros([len(list1_pipelines), len(list1_pipelines)])
         node0pair = []
         node1pair = []
@@ -81,6 +86,7 @@ def transform(inp,outp):
                 'pipeline_ids': list_ids_pipelines,
                 'performers': list_performers_pipelines,
                 'adjusted_scores': list_adjusted_score_pipelines,
+                'adjusted_metric': list_metric_pipelines,
                 'distances': lev_dist,
                 'pairs': pairs_df}
         problems_data.append(problem_dictionary)

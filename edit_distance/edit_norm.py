@@ -42,3 +42,9 @@ def problem_name(prob=0):
     with open("single_problem_data.pickle", "rb") as f:
         sp = pickle.load(f)
     return sp[prob]['type']
+
+def adjusted_metric(prob=0):
+    with open("single_problem_data.pickle", "rb") as f:
+        sp = pickle.load(f)
+    return sp[prob]['adjusted_metric'][0]
+
