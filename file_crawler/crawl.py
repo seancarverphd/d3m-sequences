@@ -14,10 +14,6 @@ problem_col = []
 performer_col = []
 pipeline_col = []
 sequence_col = []
-metric_col = []
-value_col = []
-normalized_col = []
-randomSeed_col = []
 fewer_performers = 0
 n_submissions = 0
 n_pipelines = 0
@@ -84,10 +80,10 @@ for performer in performers:
                 f.close()
                 # Parse Scores
                 assert(len(score_df)==1)
-                metric_col = score_df['metric'][0]
-                value_col = score_df['value'][0]
-                normalized_col = score_df['normalized'][0]
-                randomSeed_col = score_df['randomSeed'][0]
+                metric = score_df['metric'][0]
+                value = score_df['value'][0]
+                normalized = score_df['normalized'][0]
+                randomSeed = score_df['randomSeed'][0]
                 # Load pipeline json without scores
                 with open(config.data_home + performer + '/' + problem + '/' + often_just_one[0] + '/EVALUATION/pipelines_ranked/' + pipeline) as f:
                     d = json.load(f)  # parse pipeline json
@@ -101,8 +97,8 @@ for performer in performers:
                     list_of_names.append(step['primitive']['name'])
                 # Create dictionary for pipeline
                 pipeline_list.append({'pipeline': d['id'], 'keywords': keywords, 'primitives': list_of_step_ids, 'names': list_of_names,
-                    'metric': metric_col, 'value': value_col, 'adjusted_score': -value_col if list_metrics.isCost[metric_col] else value_col,
-                    'normalized': normalized_col, 'randomSeed': randomSeed_col, 'score_filename': score_filename,
+                    'metric': metric, 'value': value, 'adjusted_score': -value if list_metrics.isCost[metric] else value,
+                    'normalized': normalized, 'randomSeed': randomSeed, 'score_filename': score_filename,
                     'problem': problem, 'performer': performer})
                 # Update list of unique IDs
                 primitive_set = primitive_set.union(set(list_of_step_ids))
