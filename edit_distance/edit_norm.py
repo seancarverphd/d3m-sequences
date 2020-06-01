@@ -5,12 +5,16 @@ import pickle
 with open("single_problem_data.pickle", "rb") as f:
     single_problems = pickle.load(f)
 
-def lpnorm(prob=0, p=1, normalize=False, inp=None):  # None loads: single_problem_data.pickle
+def define_sp(inp=None):
     if inp is not None:
         with open(inp, "rb") as f:
             sp = pickle.load(f)
     else:
         sp = single_problems
+    return sp
+
+def lpnorm(prob=0, p=1, normalize=False, inp=None):  # None loads: single_problem_data.pickle
+    sp = define_sp(inp)
     df = sp[prob]['pairs']
     repeated_performers = df[df.performers0 == df.performers1]
     if len(repeated_performers) == 0:
@@ -31,11 +35,12 @@ def lpnorm(prob=0, p=1, normalize=False, inp=None):  # None loads: single_proble
         return grouped_performers.apply(lambda dfr: (sum(dfr.distance**p))**(1/p)).sort_values(ascending=False)
 
 def count_pipelines(prob=0, inp="single_problem_data.pickle"):
-    pass 
+    sp = define_sp(inp)
+    df = pd.DataFrame({'performer': sp[prob]['performers']})
+    return df.groupby('performer').size()
 
 def max_score(prob=0):
-    with open("single_problem_data.pickle", "rb") as f:
-        sp = pickle.load(f)
+    sp = define_sp(None)
     df = pd.DataFrame({"performer": sp[prob]['performers'], "adjusted_score": sp[prob]['adjusted_scores']})
     return df.groupby('performer').max().sort_values('adjusted_score', ascending=False)
 
@@ -57,7 +62,11 @@ def multimeasure(prob=0):
     if len(maxs) == 0:
         return None
     maxs.columns = ['max_score']
-    multi = pd.DataFrame(l1).join(pd.DataFrame(l2),how='inner').join(pd.DataFrame(linf),how='inner').join(pd.DataFrame(maxs),how='inner')
+    count = pd.DataFrame(count_pipelines(prob=prob, inp=None))
+    if len(count) == 0:
+        return None
+    count.columns = ['count']
+    multi = pd.DataFrame(l1).join(pd.DataFrame(l2),how='inner').join(pd.DataFrame(linf),how='inner').join(pd.DataFrame(maxs),how='inner').join(pd.DataFrame(count),how='inner')
     return multi
 
 def problem_name(prob=0):
