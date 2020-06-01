@@ -68,13 +68,44 @@ norm_metric = 'l2'
 
 def cor_metrics(i):
     df = edit_norm.multimeasure(prob=i)
-    return df['max_score'].corr(df[norm_metric])
+    if df is None:
+        print("df is None")
+        return None
+    elif len(df) < 3:
+        print('length of dataframe =', len(df))
+        return None
+    r = df['max_score'].corr(df[norm_metric])
+    if np.isnan(r) and df['max_score'].std() == 0:
+        print('All max scores the same')
+        return None
+    else:
+        return r
 
 def show_scatter(i):
     df = edit_norm.multimeasure(prob=i)
     sns.scatterplot(data=df, x='max_score', y=norm_metric)
     r = cor_metrics(i)
-    plt.title(edit_norm.problem_name(prob=i) + ': r='+ f'{r:.2f}')
+    try:
+        plt.title(edit_norm.problem_name(prob=i) + ': r='+ f'{r:.2f}')
+    except:
+        plt.title(edit_norm.problem_name(prob=i))
+        print("Cannot show r (NaN?)")
     plt.xlabel('MAX. ' + edit_norm.adjusted_metric(prob=i))
     label_point(df.max_score, df[norm_metric], df.index.to_series(), plt.gca())
+
+def collect_cors():
+    names = []
+    cors = []
+    for i in range(len(single_problems)):
+        print(i)
+        names.append(edit_norm.problem_name(i))
+        cors.append(cor_metrics(i))
+    return pd.DataFrame({'name': names, 'num': range(len(single_problems)), 'r': cors})
+
+def plot_cors(df):
+    sns.distplot(df.r, kde=False, bins=20)
+    plt.title("Each case is a performer/problem/dataset and at least 3 pipelines")
+    plt.xlabel("Correlation between maximum score and diversity (l2)")
+    plt.ylabel("Count of cases in bin")
+
 
