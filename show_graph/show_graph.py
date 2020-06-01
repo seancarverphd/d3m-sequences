@@ -64,9 +64,7 @@ def label_point(x, y, val, ax):
     for i, point in a.iterrows():
         ax.text(point['x']+.02, point['y'], str(point['val']))
 
-norm_metric = 'l2'
-
-def cor_metrics(i):
+def cor_metrics(i, x_metric, y_metric):
     df = edit_norm.multimeasure(prob=i)
     if df is None:
         print("df is None")
@@ -74,38 +72,39 @@ def cor_metrics(i):
     elif len(df) < 3:
         print('length of dataframe =', len(df))
         return None
-    r = df['max_score'].corr(df[norm_metric])
-    if np.isnan(r) and df['max_score'].std() == 0:
-        print('All max scores the same')
+    r = df[x_metric].corr(df[y_metric])
+    if np.isnan(r) and df[x_metric].std()*df[y_metric].std() == 0:
+        print('Scatter plot vertical or horizontal')
         return None
     else:
         return r
 
-def show_scatter(i):
+def show_scatter(i,x_metric, y_metric):
     df = edit_norm.multimeasure(prob=i)
-    sns.scatterplot(data=df, x='max_score', y=norm_metric)
-    r = cor_metrics(i)
+    sns.scatterplot(data=df, x=x_metric, y=y_metric)
+    r = cor_metrics(i, x_metric, y_metric)
     try:
         plt.title(edit_norm.problem_name(prob=i) + ': r='+ f'{r:.2f}')
     except:
         plt.title(edit_norm.problem_name(prob=i))
         print("Cannot show r (NaN?)")
-    plt.xlabel('MAX. ' + edit_norm.adjusted_metric(prob=i))
-    label_point(df.max_score, df[norm_metric], df.index.to_series(), plt.gca())
+    if x_metric == 'max_score':
+        plt.xlabel('MAX. ' + edit_norm.adjusted_metric(prob=i))
+    label_point(df[x_metric], df[y_metric], df.index.to_series(), plt.gca())
 
-def collect_cors():
+def collect_cors(x_metric, y_metric):
     names = []
     cors = []
     for i in range(len(single_problems)):
         print(i)
         names.append(edit_norm.problem_name(i))
-        cors.append(cor_metrics(i))
+        cors.append(cor_metrics(i, x_metric, y_metric))
     return pd.DataFrame({'name': names, 'num': range(len(single_problems)), 'r': cors})
 
-def plot_cors(df):
+def plot_cors(df, x_metric, y_metric):
     sns.distplot(df.r, kde=False, bins=20)
     plt.title("Each case is a performer/problem/dataset and at least 3 pipelines")
-    plt.xlabel("Correlation between maximum score and diversity (l2)")
+    plt.xlabel("Correlation between "+x_metric+" and "+y_metric)
     plt.ylabel("Count of cases in bin")
 
 
