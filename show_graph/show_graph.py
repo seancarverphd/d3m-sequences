@@ -64,12 +64,12 @@ def label_point(x, y, val, ax):
     for i, point in a.iterrows():
         ax.text(point['x']+.02, point['y'], str(point['val']))
 
-def cor_metrics(i, x_metric, y_metric):
+def cor_metrics(i, x_metric, y_metric, min_performers=3):
     df = edit_norm.multimeasure(prob=i)
     if df is None:
         print("df is None")
         return None
-    elif len(df) < 3:
+    elif len(df) < min_performers:
         print('length of dataframe =', len(df))
         return None
     r = df[x_metric].corr(df[y_metric])
@@ -92,13 +92,13 @@ def show_scatter(i,x_metric, y_metric):
         plt.xlabel('MAX. ' + edit_norm.adjusted_metric(prob=i))
     label_point(df[x_metric], df[y_metric], df.index.to_series(), plt.gca())
 
-def collect_cors(x_metric, y_metric):
+def collect_cors(x_metric, y_metric, min_performers=3):
     names = []
     cors = []
     for i in range(len(single_problems)):
         print(i)
         names.append(edit_norm.problem_name(i))
-        cors.append(cor_metrics(i, x_metric, y_metric))
+        cors.append(cor_metrics(i, x_metric, y_metric, min_performers))
     return pd.DataFrame({'name': names, 'num': range(len(single_problems)), 'r': cors})
 
 def plot_cors(df, x_metric, y_metric):
