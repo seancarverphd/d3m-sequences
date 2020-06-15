@@ -39,6 +39,10 @@ def count_pipelines(prob=0, inp="single_problem_data.pickle"):
     df = pd.DataFrame({'performer': sp[prob]['performers']})
     return df.groupby('performer').size()
 
+def count_problems(inp="single_problem_data.pickle"):
+    sp = define_sp(inp)
+    return len(sp)
+
 def max_score(prob=0):
     sp = define_sp(None)
     df = pd.DataFrame({"performer": sp[prob]['performers'], "adjusted_score": sp[prob]['adjusted_scores']})
@@ -67,7 +71,21 @@ def multimeasure(prob=0):
         return None
     count.columns = ['count']
     multi = pd.DataFrame(l1).join(pd.DataFrame(l2),how='inner').join(pd.DataFrame(linf),how='inner').join(pd.DataFrame(maxs),how='inner').join(pd.DataFrame(count),how='inner')
+    multi = multi.assign(prob_num=prob)
+    multi = multi.assign(prob_name=problem_name(prob=prob))
     return multi
+
+def multizscore(prob=0):
+    df = multimeasure(prob=prob)
+    if df is None:
+        return None
+    cols = list(df.columns)
+    cols.remove('prob_num')
+    cols.remove('prob_name')
+    for col in cols:
+        col_zscore = col + '_zscore'
+        df[col_zscore] = (df[col] - df[col].mean())/df[col].std(ddof=0)
+    return df
 
 def problem_name(prob=0):
     with open("single_problem_data.pickle", "rb") as f:
@@ -79,3 +97,15 @@ def adjusted_metric(prob=0):
         sp = pickle.load(f)
     return sp[prob]['adjusted_metric'][0]
 
+def measures_all_probs(min_performers=5, multi=multizscore):
+    dfs = []
+    for prob in range(count_problems()):
+        df = pd.DataFrame(multi(prob)).reset_index()
+        if len(df) < min_performers:
+            continue
+        else:
+            colnames = list(df.columns)
+            colnames[0] = 'performer'
+            df.columns = colnames
+            dfs.append(df)
+    return pd.concat(dfs).reset_index(drop=True)
