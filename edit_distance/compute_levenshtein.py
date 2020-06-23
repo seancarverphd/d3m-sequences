@@ -74,6 +74,7 @@ def transform(inp,outp):
             'performers0': performer0pair, 'performers1': performer1pair,
             'distance': distancepair})
         problem_dictionary = {'type': u_problem,
+                'keywords': problems_one_type.iloc[0,2],
                 'all_primitives_used': string2_primitives_used_for_problem,
                 'translator2h': trans2h,
                 'translatorh2': transh2,
