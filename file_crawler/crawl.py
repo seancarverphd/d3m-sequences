@@ -40,11 +40,13 @@ for performer in performers:
     if performer == 'tamu_2':  # Eliminate this performer with only 1 problem and 1 pipeline as per S. Stanley's instructions
         fewer_performers += 1
         continue
+    # Usually data_home = '/home/sean/Documents/dmc/d3m/json/'
     submissions = os.listdir(config.data_home + '/' + performer)
     n_submissions += len(submissions)  # A "submission" is a "(performer, problem)"
     for problem in submissions:
         n_failed_problems = len(problems_that_failed_to_load_metadata)
         try:
+            # Usually sets_home = '/home/sean/Documents/dmc/d3m/archive/seed_datasets_current/'
             with open(config.sets_home + problem + '/' + problem + '_problem/problemDoc.json') as f:
                 d = json.load(f)  # parse problem metadata json
         except:
@@ -59,14 +61,17 @@ for performer in performers:
         delta_unique_submissions.append(len(unique_submissions) - n_unique_submissions_old)
         problem_set = problem_set.union({problem})  # only increases if problem represents a new problem
         keywords = d['about']['taskKeywords']
+        # Usually data_home = '/home/sean/Documents/dmc/d3m/json/'
         often_just_one = os.listdir(config.data_home + performer + '/' + problem)
         assert len(often_just_one) == 1
+        # Usually data_home = '/home/sean/Documents/dmc/d3m/json/'
         pipelines = os.listdir(config.data_home + performer + '/' + problem + '/' + often_just_one[0] + '/EVALUATION/pipelines_ranked')
         for pipeline in pipelines:
             if pipeline[-4:] == 'rank':  # should have both .rank file and .json file and nothing else
                 continue  # next file in pipeline directory
             else:
                 assert pipeline[-4:] == 'json'
+                # Usually data_home = '/home/sean/Documents/dmc/d3m/json/'
                 score_filename = config.data_home + performer + '/' + problem + '/' + often_just_one[0] + '/EVALUATION/score/' + pipeline[:-4] + "score.csv"
                 try:  # load scores 
                     f = open(score_filename)
@@ -91,6 +96,7 @@ for performer in performers:
                 normalized = score_df['normalized'][0]
                 randomSeed = score_df['randomSeed'][0]
                 # Load pipeline json without scores
+                # Usually data_home = '/home/sean/Documents/dmc/d3m/json/'
                 with open(config.data_home + performer + '/' + problem + '/' + often_just_one[0] + '/EVALUATION/pipelines_ranked/' + pipeline) as f:
                     d = json.load(f)  # parse pipeline json
                 # Parse pipeline json
@@ -178,16 +184,23 @@ assert cannotloadscores == 639
 assert cannotopenscores == 10
 
 # Dump data
+# Usually sgt_data = '/home/sean/Code/d3m-sequences/file_crawler/sgt.pickle'
 with open(config.sgt_data, 'wb') as f:
     pickle.dump([pipeline['sequence_list'] for pipeline in pipeline_list], f)  # dump corpus
     pickle.dump([id2code[primitive] for primitive in primitive_set], f)  # dump alphabets
 
+# Usually pipeline_data = '/home/sean/Code/d3m-sequences/file_crawler/pipelines.pickle'
 with open(config.pipeline_data, 'wb') as f:
     pickle.dump(pipeline_list, f)  # dump list of pipeline dictionaries
 
+# Usually translators = '/home/sean/Code/d3m-sequences/file_crawler/translators.pickle'
 with open(config.translators, 'wb') as f:
     pickle.dump(code2id, f)  # dump code to id translator
     pickle.dump(id2code, f)  # dump reverse translator
 
+# Usually problem_data = '/home/sean/Code/d3m-sequences/file_crawler/problems.pickle'
 with open(config.problem_data, 'wb') as f:
     pickle.dump(df_problem, f) # dump the problem DataFrame
+
+
+
