@@ -12,6 +12,7 @@ random.seed(0)
 
 problem_col = []
 performer_col = []
+keyword_col = []
 pipeline_col = []
 sequence_col = []
 metric_col = []
@@ -117,6 +118,7 @@ for performer in performers:
                 # Update df_problem
                 problem_col.append(problem)
                 performer_col.append(performer)
+                keyword_col.append(','.join(keywords))
                 pipeline_col.append(d['id'])
                 metric_col.append(metric)
                 value_col.append(value)
@@ -171,7 +173,7 @@ print(1, "Maximum number of scores")
 print(cannotloadscores, "Score failed to load.  File exists but empty?")
 print(cannotopenscores, "Score failed to open.  File does not exist?")
 
-df_problem = pd.DataFrame({'problem': problem_col, 'performer': performer_col, 'pipeline': pipeline_col, 'sequence': sequence_col, 'num': range(len(problem_col)),
+df_problem = pd.DataFrame({'problem': problem_col, 'performer': performer_col, 'keywords': keyword_col, 'pipeline': pipeline_col, 'sequence': sequence_col, 'num': range(len(problem_col)),
                 'metric': metric_col, 'value': value_col, 'adjusted_score': adjusted_score_col, 'normalized': normalized_col, 'randomSeed': randomSeed})
 
 # Assert that counts haven't changed so can investigate if they have
