@@ -1,6 +1,8 @@
 import numpy as np
 import pandas as pd
 import pickle
+import statsmodels.api as sm
+import statsmodels.formula.api as smf
 
 with open("single_problem_data.pickle", "rb") as f:
     single_problems = pickle.load(f)
@@ -73,6 +75,7 @@ def multimeasure(prob=0):
     multi = pd.DataFrame(l1).join(pd.DataFrame(l2),how='inner').join(pd.DataFrame(linf),how='inner').join(pd.DataFrame(maxs),how='inner').join(pd.DataFrame(count),how='inner')
     multi = multi.assign(prob_num=prob)
     multi = multi.assign(prob_name=problem_name(prob=prob))
+    multi = multi.assign(keywords=problem_keywords(prob=prob))
     return multi
 
 def multizscore(prob=0):
@@ -82,25 +85,35 @@ def multizscore(prob=0):
     cols = list(df.columns)
     cols.remove('prob_num')
     cols.remove('prob_name')
+    cols.remove('keywords')
     for col in cols:
         col_zscore = col + '_zscore'
         df[col_zscore] = (df[col] - df[col].mean())/df[col].std(ddof=0)
     return df
 
 def problem_name(prob=0):
-    with open("single_problem_data.pickle", "rb") as f:
-        sp = pickle.load(f)
-    return sp[prob]['type']
+    return single_problems[prob]['type']
+
+def problem_keywords(prob=0):
+    return single_problems[prob]['keywords']
 
 def adjusted_metric(prob=0):
-    with open("single_problem_data.pickle", "rb") as f:
-        sp = pickle.load(f)
-    return sp[prob]['adjusted_metric'][0]
+    return single_problems[prob]['adjusted_metric'][0]
 
-def measures_all_probs(min_performers=5, multi=multizscore):
+def keywords_ok(prob, kw_filter):
+    if kw_filter is None:
+        return True
+    actual_keywords = set(problem_keywords(prob=prob).split(sep=','))
+    desired_keywords = set(kw_filter.split(sep=','))
+    return desired_keywords.issubset(actual_keywords)
+
+def measures_all_probs(min_performers=5, multi=multizscore, kw_filter=None):
     dfs = []
     for prob in range(count_problems()):
-        df = pd.DataFrame(multi(prob)).reset_index()
+        if keywords_ok(prob, kw_filter):
+            df = pd.DataFrame(multi(prob)).reset_index()
+        else:
+            continue
         if len(df) < min_performers:
             continue
         else:
@@ -109,3 +122,9 @@ def measures_all_probs(min_performers=5, multi=multizscore):
             df.columns = colnames
             dfs.append(df)
     return pd.concat(dfs).reset_index(drop=True)
+
+def kw_regression(min_performers=5, keywords=None):
+    df = measures_all_probs(min_performers, multizscore, keywords)
+    mod = smf.ols(formula = 'max_score_zscore ~ l1_zscore + linf_zscore + count_zscore', data=df)
+    res = mod.fit()
+    return res.summary()
