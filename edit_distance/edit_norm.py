@@ -97,6 +97,11 @@ def problem_name(prob=0):
 def problem_keywords(prob=0):
     return single_problems[prob]['keywords']
 
+def all_keywords():
+    all_kw = [problem_keywords(prob) for prob in range(count_problems())]
+    unique_kw = list(set(all_kw))
+    return unique_kw
+
 def adjusted_metric(prob=0):
     return single_problems[prob]['adjusted_metric'][0]
 
@@ -106,6 +111,33 @@ def keywords_ok(prob, kw_filter):
     actual_keywords = set(problem_keywords(prob=prob).split(sep=','))
     desired_keywords = set(kw_filter.split(sep=','))
     return desired_keywords.issubset(actual_keywords)
+
+def old_categories():
+    return ['binary_classification', 'clustering', 'collaborative_filtering', 'community_detection', 'graph_matching', 'link_prediction',
+            'binary_semisupervised_classification', 'multiclass_semisupervised_classification', 'multiclass_classification',
+            'multilabel_classification', 'multivariate_regression', 'object_detection', 'regression', 'time_series',
+            'vertex_nomination', 'vertex_classification']
+
+def category_to_keywords():
+    return {'binary_classification': 'classification,binary',
+            'clustering': None,
+            'collaborative_filtering': 'collaborativeFiltering',
+            'community_detection': 'communityDetection',
+            'graph_matching': 'graphMatching',
+            'link_prediction': 'linkPredition',
+            'binary_semisupervised_classification': 'semiSupervised,classification,binary',
+            'multiclass_semisupervised_classification': 'semiSupervised,classification,multiClass',
+            'multiclass_classification': 'classification,multiClass',
+            'multilabel_classification': None,
+            'multivariate_regression': 'regression,multivariate',
+            'object_detection': 'objectDetection',
+            'regression': 'regression,univariate',
+            'time_series': 'time_series',
+            'vertex_nomination': None,
+            'vertex_classification': 'vertexClassification'}
+
+def categories():
+    return [*category_to_keywords()]
 
 def measures_all_probs(min_performers=5, multi=multizscore, kw_filter=None):
     dfs = []
