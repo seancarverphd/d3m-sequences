@@ -1,3 +1,4 @@
+import itertools
 import numpy as np
 import pandas as pd
 import pickle
@@ -97,6 +98,9 @@ def problem_name(prob=0):
 def problem_keywords(prob=0):
     return single_problems[prob]['keywords']
 
+def problem_performers(prob=0):
+    return list(set(single_problems[prob]['performers']))
+
 def all_keywords():
     all_kw = [problem_keywords(prob) for prob in range(count_problems())]
     unique_kw = list(set(all_kw))
@@ -105,18 +109,31 @@ def all_keywords():
 def adjusted_metric(prob=0):
     return single_problems[prob]['adjusted_metric'][0]
 
-def keywords_ok(prob, kw_filter):
-    if kw_filter is None:
-        return True
-    actual_keywords = set(problem_keywords(prob=prob).split(sep=','))
-    desired_keywords = set(kw_filter.split(sep=','))
-    return desired_keywords.issubset(actual_keywords)
+def problem_has_keywords(prob, desired_keywords_string, default_if_none=True):
+    if desired_keywords_string is None:
+        return default_if_none
+    actual_keywords_set = set(problem_keywords(prob=prob).split(sep=','))
+    desired_keywords_set = set(desired_keywords_string.split(sep=','))
+    return desired_keywords_set.issubset(actual_keywords_set)
 
-def old_categories():
-    return ['binary_classification', 'clustering', 'collaborative_filtering', 'community_detection', 'graph_matching', 'link_prediction',
-            'binary_semisupervised_classification', 'multiclass_semisupervised_classification', 'multiclass_classification',
-            'multilabel_classification', 'multivariate_regression', 'object_detection', 'regression', 'time_series',
-            'vertex_nomination', 'vertex_classification']
+def all_performers():
+    all_perf = [problem_performers(prob) for prob in range(count_problems())]
+    return list(set(list(itertools.chain.from_iterable(all_perf))))
+
+def had_success(performer, prob):
+    return performer in set(problem_performers(prob=prob))
+
+def df_performer_succeeded():
+    all_perf = all_performers()
+    performer_successes = {}
+    for performer in all_perf:
+        performer_successes[performer] = [had_success(performer, prob) for prob in range(count_problems())]
+    return pd.DataFrame(performer_successes)
+
+original_categories = ['binary_classification', 'clustering', 'collaborative_filtering', 'community_detection', 'graph_matching', 'link_prediction',
+        'binary_semisupervised_classification', 'multiclass_semisupervised_classification', 'multiclass_classification',
+        'multilabel_classification', 'multivariate_regression', 'object_detection', 'regression', 'time_series',
+        'vertex_nomination', 'vertex_classification']
 
 def category_to_keywords():
     return {'binary_classification': 'classification,binary',
@@ -139,10 +156,16 @@ def category_to_keywords():
 def categories():
     return [*category_to_keywords()]
 
-def measures_all_probs(min_performers=5, multi=multizscore, kw_filter=None):
+def categories_to_problems():
+    prob_in_cat = {}
+    for cat, kws in category_to_keywords().items():
+        prob_in_cat[cat] = [problem_has_keywords(prob, kws, default_if_none=False) for prob in range(count_problems())]
+    return pd.DataFrame(prob_in_cat)
+
+def measures_all_probs(min_performers=5, multi=multizscore, keywords=None):
     dfs = []
     for prob in range(count_problems()):
-        if keywords_ok(prob, kw_filter):
+        if problem_has_keywords(prob, keywords):
             df = pd.DataFrame(multi(prob)).reset_index()
         else:
             continue
