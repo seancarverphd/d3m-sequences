@@ -141,7 +141,7 @@ def category_to_keywords():
             'collaborative_filtering': 'collaborativeFiltering',
             'community_detection': 'communityDetection',
             'graph_matching': 'graphMatching',
-            'link_prediction': 'linkPredition',
+            'link_prediction': 'linkPrediction',
             'binary_semisupervised_classification': 'semiSupervised,classification,binary',
             'multiclass_semisupervised_classification': 'semiSupervised,classification,multiClass',
             'multiclass_classification': 'classification,multiClass',
@@ -149,7 +149,7 @@ def category_to_keywords():
             'multivariate_regression': 'regression,multivariate',
             'object_detection': 'objectDetection',
             'regression': 'regression,univariate',
-            'time_series': 'time_series',
+            'time_series': 'timeSeries',
             'vertex_nomination': None,
             'vertex_classification': 'vertexClassification'}
 
@@ -161,6 +161,9 @@ def categories_to_problems():
     for cat, kws in category_to_keywords().items():
         prob_in_cat[cat] = [problem_has_keywords(prob, kws, default_if_none=False) for prob in range(count_problems())]
     return pd.DataFrame(prob_in_cat)
+
+def count_problems_for_each_category():
+    return categories_to_problems().sum(axis=0)
 
 def measures_all_probs(min_performers=5, multi=multizscore, keywords=None):
     dfs = []
