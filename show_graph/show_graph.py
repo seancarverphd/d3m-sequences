@@ -110,7 +110,7 @@ def plot_cors(df, x_metric, y_metric):
 
 def plot_rsquared_barplot():
     fig = plt.figure()
-    ax = fig.add_axes([0,0,1,1])
+    ax = fig.gca()
     cats = edit_norm.categories()
     r2s = []
     for cat in cats:
@@ -120,3 +120,39 @@ def plot_rsquared_barplot():
         else:
             r2s.append(np.NaN)
     ax.bar(cats,r2s)
+    ax.set_xticklabels(cats, rotation=45, horizontalalignment='right')
+    fig.title("r-squared")
+    plt.tight_layout()
+
+def plot_l1_zscore_barplot():
+    fig = plt.figure()
+    ax = fig.gca()
+    cats = edit_norm.categories()
+    r2s = []
+    for cat in cats:
+        res = edit_norm.cat_regression(min_performers=5, category=cat)
+        if res is not None:
+            r2s.append(res.params[1])
+        else:
+            r2s.append(np.NaN)
+    ax.bar(cats,r2s)
+    ax.set_xticklabels(cats, rotation=45, horizontalalignment='right')
+    ax.set_title("l1_zscore coefficient")
+    plt.tight_layout()
+
+def plot_rsquared_barplot():
+    fig = plt.figure()
+    ax = fig.gca()
+    cats = edit_norm.categories()
+    r2s = []
+    for cat in cats:
+        res = edit_norm.cat_regression(min_performers=5, category=cat)
+        if res is not None:
+            r2s.append(res.rsquared)
+        else:
+            r2s.append(np.NaN)
+    ax.bar(cats,r2s)
+    ax.set_xticklabels(cats, rotation=45, horizontalalignment='right')
+    ax.set_title("r-squared")
+    plt.tight_layout()
+
