@@ -109,7 +109,7 @@ def all_keywords():
 def adjusted_metric(prob=0):
     return single_problems[prob]['adjusted_metric'][0]
 
-def problem_has_keywords(prob, desired_keywords_string, default_if_none=True):
+def problem_has_keywords(prob, desired_keywords_string, default_if_none=True):  # returns logical; elsewhere summing/counting True's
     if desired_keywords_string is None:
         return default_if_none
     actual_keywords_set = set(problem_keywords(prob=prob).split(sep=','))
@@ -168,7 +168,7 @@ def count_problems_for_each_category():
 def measures_all_probs(min_performers=5, multi=multizscore, keywords=None):
     dfs = []
     for prob in range(count_problems()):
-        if problem_has_keywords(prob, keywords):
+        if problem_has_keywords(prob, keywords, default_if_none=False):
             df = pd.DataFrame(multi(prob)).reset_index()
         else:
             continue
