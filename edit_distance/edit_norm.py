@@ -179,10 +179,21 @@ def measures_all_probs(min_performers=5, multi=multizscore, keywords=None):
             colnames[0] = 'performer'
             df.columns = colnames
             dfs.append(df)
-    return pd.concat(dfs).reset_index(drop=True)
+    if len(dfs) > 0:
+        return pd.concat(dfs).reset_index(drop=True)
+    else:
+        return None
 
 def kw_regression(min_performers=5, keywords=None):
     df = measures_all_probs(min_performers, multizscore, keywords)
-    mod = smf.ols(formula = 'max_score_zscore ~ l1_zscore + linf_zscore + count_zscore', data=df)
-    res = mod.fit()
-    return res.summary()
+    if df is not None:
+        mod = smf.ols(formula = 'max_score_zscore ~ l1_zscore + linf_zscore + count_zscore', data=df)
+        res = mod.fit()
+        return res
+        # return res.summary()
+    else:
+        return None
+
+def cat_regression(min_performers=5, category=None):
+    return kw_regression(min_performers=5, keywords=category_to_keywords()[category])
+

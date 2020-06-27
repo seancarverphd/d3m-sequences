@@ -108,3 +108,15 @@ def plot_cors(df, x_metric, y_metric):
     plt.ylabel("Count of cases in bin")
 
 
+def plot_rsquared_barplot():
+    fig = plt.figure()
+    ax = fig.add_axes([0,0,1,1])
+    cats = edit_norm.categories()
+    r2s = []
+    for cat in cats:
+        res = edit_norm.cat_regression(min_performers=5, category=cat)
+        if res is not None:
+            r2s.append(res.rsquared)
+        else:
+            r2s.append(np.NaN)
+    ax.bar(cats,r2s)
