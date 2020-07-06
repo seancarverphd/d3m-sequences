@@ -156,3 +156,26 @@ def plot_rsquared_barplot():
     ax.set_title("r-squared")
     plt.tight_layout()
 
+def plot_meas_barplot(a,n=None,description=None):
+    if description is None and n is None:
+        description=a
+    elif description is None:
+        description=a+'['+str(n)+']'
+    fig = plt.figure()
+    ax = fig.gca()
+    cats = edit_norm.categories()
+    meas = []
+    for cat in cats:
+        res = edit_norm.cat_regression(min_performers=5, category=cat)
+        if res is not None:
+            if n is None:
+                meas.append(getattr(res,a))
+            else:
+                meas.append(getattr(res,a)[n])
+        else:
+            meas.append(np.NaN)
+    ax.bar(cats,meas)
+    ax.set_xticklabels(cats, rotation=45, horizontalalignment='right')
+    ax.set_title(description)
+    plt.tight_layout()
+
