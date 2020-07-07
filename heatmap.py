@@ -35,6 +35,7 @@ def create_heatmap(path):
                        )
         fig.update_xaxes(side="bottom")
         fig.show()
+        fig.write_image("heatmap.pdf")
 
 
 if __name__ == '__main__':
