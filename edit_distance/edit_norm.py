@@ -169,10 +169,10 @@ def categories_to_problems():
 def count_problems_for_each_category():
     return categories_to_problems().sum(axis=0)
 
-def measures_all_probs(min_performers=5, multi=multizscore, keywords=None):
+def measures_all_probs(min_performers=5, multi=multizscore, keywords=None, default_if_none=False):
     dfs = []
     for prob in range(count_problems()):
-        if problem_has_keywords(prob, keywords, default_if_none=False):
+        if problem_has_keywords(prob, keywords, default_if_none=default_if_none):
             df = pd.DataFrame(multi(prob)).reset_index()
         else:
             continue
@@ -210,7 +210,17 @@ def sumdf(min_performers=5):
     return dg.assign(best_string=dg.best.apply(rep))
 
 def kw_regression(min_performers=5, keywords=None):
-    df = measures_all_probs(min_performers, multizscore, keywords)
+    df = measures_all_probs(min_performers, multizscore, keywords, default_if_None=False)
+    if df is not None:
+        mod = smf.ols(formula = 'max_score_zscore ~ l1_zscore + linf_zscore + count_zscore', data=df)
+        res = mod.fit()
+        return res
+        # return res.summary()
+    else:
+        return None
+
+def all_regression(min_performers=5):
+    df = measures_all_probs(min_performers, multizscore, keywords=None, default_if_None=True)
     if df is not None:
         mod = smf.ols(formula = 'max_score_zscore ~ l1_zscore + linf_zscore + count_zscore', data=df)
         res = mod.fit()
