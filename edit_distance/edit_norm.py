@@ -78,6 +78,7 @@ def multimeasure(prob=0):
     multi = multi.assign(prob_name=problem_name(prob=prob))
     multi = multi.assign(keywords=problem_keywords(prob=prob))
     multi = multi.assign(ranking=multi.max_score.rank(method='dense', ascending=False))
+    multi = multi.assign(best=multi.ranking==1)
     return multi
 
 def multizscore(prob=0):
@@ -89,6 +90,7 @@ def multizscore(prob=0):
     cols.remove('prob_name')
     cols.remove('keywords')
     cols.remove('ranking')
+    cols.remove('best')
     for col in cols:
         col_zscore = col + '_zscore'
         df[col_zscore] = (df[col] - df[col].mean())/df[col].std(ddof=0)
@@ -194,7 +196,19 @@ def bigdf(min_performers=5):
             df = df.assign(category=cat)
             dfs.append(df)
     return pd.concat(dfs).reset_index(drop=True)
-        
+
+def meandf(min_performers=5):
+    df = bigdf(min_performers=min_performers)
+    return df.groupby(['category','performer']).mean()
+
+def rep(n):
+    return '*'*int(n)
+
+def sumdf(min_performers=5):
+    df = bigdf(min_performers=min_performers)
+    dg = df.groupby(['category','performer']).sum()
+    return dg.assign(best_string=dg.best.apply(rep))
+
 def kw_regression(min_performers=5, keywords=None):
     df = measures_all_probs(min_performers, multizscore, keywords)
     if df is not None:
