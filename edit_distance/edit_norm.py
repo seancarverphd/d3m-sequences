@@ -197,6 +197,9 @@ def bigdf(min_performers=5):
             dfs.append(df)
     return pd.concat(dfs).reset_index(drop=True)
 
+def bigdf_norepeats(min_performers=5):
+    return measures_all_probs(min_performers, multizscore, keywords=None, default_if_none=True)
+
 def meandf(min_performers=5):
     df = bigdf(min_performers=min_performers)
     return df.groupby(['category','performer']).mean()
@@ -210,7 +213,7 @@ def sumdf(min_performers=5):
     return dg.assign(best_string=dg.best.apply(rep))
 
 def kw_regression(min_performers=5, keywords=None):
-    df = measures_all_probs(min_performers, multizscore, keywords, default_if_None=False)
+    df = measures_all_probs(min_performers, multizscore, keywords, default_if_none=False)
     if df is not None:
         mod = smf.ols(formula = 'max_score_zscore ~ l1_zscore + linf_zscore + count_zscore', data=df)
         res = mod.fit()
@@ -220,7 +223,7 @@ def kw_regression(min_performers=5, keywords=None):
         return None
 
 def all_regression(min_performers=5):
-    df = measures_all_probs(min_performers, multizscore, keywords=None, default_if_None=True)
+    df = measures_all_probs(min_performers, multizscore, keywords=None, default_if_none=True)
     if df is not None:
         mod = smf.ols(formula = 'max_score_zscore ~ l1_zscore + linf_zscore + count_zscore', data=df)
         res = mod.fit()
