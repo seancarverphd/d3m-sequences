@@ -1,0 +1,22 @@
+\documentclass{article}
+\begin{document}
+
+Here is the hierarchical model we will fit:
+
+$$y_i = \beta_{0c[i]} + \beta_{1c[i]} X_{i1} + \beta_{2c[i]} X_{i2} +
+\beta_{3c[j]} X_{i3} + \eta_{c[i]} + \epsilon_i$$
+
+The $\beta_j$ are the coefficients, $y_i$ is the response variable,
+$X_{ij}$ are the predictor variables, $\eta_{c[i]}$ are the category
+error terms, one for each category containing the $i$ data point.
+$\epsilon_i$ is the global error term.
+
+\begin{eqnarray*}
+  \beta_j & \sim & N(\mu_{jc}, \sigma_{jc}) \mbox{ for each $j$ and $c$} \\
+	\eta_{c} & \sim & N(0, \sigma^2_{\eta}) \mbox{ for each $c$} \\
+  \epsilon_i & \sim & N(0, \sigma^2_{\epsilon})
+\end{eqnarray*}
+
+We have to fit the $\mu_{jc}$'s, the $\sigma_{jc}$'s the
+$\sigma_{\eta_c}$'s and the $\sigma_\epsilon$.
+\end{document}
