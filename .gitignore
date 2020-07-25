@@ -144,3 +144,4 @@ dmypy.json
 *.pkl
 .Rproj.user
 .Rhistory
+.RData
