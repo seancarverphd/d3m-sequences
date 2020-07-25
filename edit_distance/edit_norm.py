@@ -120,6 +120,27 @@ def problem_has_keywords(prob, desired_keywords_string, default_if_none=True):  
     desired_keywords_set = set(desired_keywords_string.split(sep=','))
     return desired_keywords_set.issubset(actual_keywords_set)
 
+def problem_in_categories(prob):
+    cats = set()
+    for cat, kws in category_to_keywords().items():
+        if problem_has_keywords(prob, kws, default_if_none=False):
+            cats = cats.union([cat])
+    return cats
+
+def in_categories_df():
+    name_col = []
+    keyw_col = []
+    cats_col = []
+    ncats_col = []
+    for prob in range(count_problems()):
+        name_col.append(problem_name(prob))
+        keyw_col.append(problem_keywords(prob))
+        set_of_cats = problem_in_categories(prob)
+        cats_col.append(str(set_of_cats))
+        ncats_col.append(len(set_of_cats))
+    df = pd.DataFrame({'name': name_col, 'keywords': keyw_col, 'categories': cats_col, 'ncats': ncats_col})
+    return df[df.ncats != 1]
+
 def all_performers():
     all_perf = [problem_performers(prob) for prob in range(count_problems())]
     return list(set(list(itertools.chain.from_iterable(all_perf))))
