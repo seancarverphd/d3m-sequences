@@ -194,6 +194,7 @@ def bigdf(min_performers=5):
         df = measures_all_probs(min_performers=min_performers, multi=multizscore, keywords=kws)
         if df is not None:
             df = df.assign(category=cat)
+            df = df.assign(kws=kws)
             dfs.append(df)
     return pd.concat(dfs).reset_index(drop=True)
 
