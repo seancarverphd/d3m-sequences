@@ -37,7 +37,7 @@ N <- 100
 x <- rnorm(N)
 grp <- c(rep(1, 45), rep(2, 45), rep(3, 10))
 intercept_values <- rnorm(3, 0, 2)
-slope_values <- norm(3, 1.5, .5)
+slope_values <- rnorm(3, 1.5, .5)
 slopes <- c(rep(slope_values[1], 45), rep(slope_values[2], 45), rep(slope_values[3], 10))
 intercepts <- c(rep(intercept_values[1], 45), rep(intercept_values[2], 45), rep(intercept_values[3], 10))
 grp_errors <- c(rnorm(45, 0, .8), rnorm(45, 0, 1.5), rnorm(10, 0, 1))
