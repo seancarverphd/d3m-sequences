@@ -156,7 +156,7 @@ def df_performer_succeeded():
     return pd.DataFrame(performer_successes)
 
 original_categories = ['binary_classification', 'clustering', 'collaborative_filtering', 'community_detection', 'graph_matching', 'link_prediction',
-        'binary_semisupervised_classification', 'multiclass_semisupervised_classification', 'multiclass_classification',
+        'semisupervised_classification', 'multiclass_classification',
         'multilabel_classification', 'multivariate_regression', 'object_detection', 'regression', 'time_series',
         'vertex_nomination', 'vertex_classification']
 
