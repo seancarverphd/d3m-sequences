@@ -6,7 +6,6 @@ import plotly.figure_factory as ff
 def get_colors(path):
 
     with open(path) as small_df_csv:
-        # pd.set_option('display.max_columns', None)
         df = pd.read_csv(small_df_csv)
         columns = df.groupby('category').sum()
         columns = columns.sort_values('l2', ascending=False)
@@ -38,9 +37,6 @@ def get_asterisk(path, categories, performers):
             values=['best_string'],
             aggfunc=lambda x: ''.join(
                 str(v) for v in x)).fillna("")
-        # print(new_df)
-        #
-
         new_df.columns = new_df.columns.get_level_values(1)
 
         df2 = new_df.reindex(performers, axis=0)
@@ -64,7 +60,9 @@ def create_heatmap(x_values, y_values, data, text):
         xaxis=dict(
             title='Category'), yaxis=dict(
             title='Performer'))
-    fig.show()
+    for i in range(len(fig.layout.annotations)):
+        fig.layout.annotations[i].font.size = 5.5
+    # fig.show()
     fig.write_image("heatmap2.pdf")
 
 

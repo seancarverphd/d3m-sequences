@@ -49,7 +49,9 @@ def create_heatmap(x_values, y_values, data, text):
             title='Category'), yaxis=dict(
             title='Performer'), title='')
     fig.update_coloraxes(dict(showscale=True))
-    fig.show()
+    for i in range(len(fig.layout.annotations)):
+        fig.layout.annotations[i].font.size = 5.5
+    # fig.show()
     fig.write_image("heatmap.pdf")
 
 
