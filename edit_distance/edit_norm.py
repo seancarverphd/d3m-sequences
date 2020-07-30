@@ -184,12 +184,34 @@ def categories_to_problems():
     prob_in_cat = {}
     for cat, kws in category_to_keywords().items():
         prob_in_cat[cat] = [problem_has_keywords(prob, kws, default_if_none=False) for prob in range(count_problems())]
-    return pd.DataFrame(prob_in_cat)
+    df = pd.DataFrame(prob_in_cat)
+    ncats = df.sum(axis=1)
+    for p in range(len(ncats)):
+        if ncats[p] > 1:
+            if df.loc[p,'link_prediction'] == True:
+                df.loc[p,:] = False
+                df.loc[p,'link_prediction'] = True
+            elif df.loc[p,'time_series'] == True:
+                df.loc[p,:] = False
+                df.loc[p,'time_series'] = True
+            elif df.loc[p, 'semisupervised_classification'] == True:
+                df.loc[p,:] = False
+                df.loc[p,'semisupervised_classification'] = True
+            else:
+                pass
+    return df
+
+cats_to_probs = categories_to_problems()
+
+def problem_to_category(prob):
+    for category in cats_to_probs.columns:
+        if cats_to_probs.loc[prob,category]:
+            return category
 
 def count_problems_for_each_category():
     return categories_to_problems().sum(axis=0)
 
-def measures_all_probs(min_performers=5, multi=multizscore, keywords=None):
+def measures_all_probs_keywords(min_performers=5, multi=multizscore, keywords=None):
     dfs = []
     for prob in range(count_problems()):
         if problem_has_keywords(prob, keywords, default_if_none=False):
@@ -208,13 +230,31 @@ def measures_all_probs(min_performers=5, multi=multizscore, keywords=None):
     else:
         return None
 
+def measures_all_probs_categories(min_performers=5, multi=multizscore, category=None):
+    dfs = []
+    for prob in range(count_problems()):
+        if problem_to_category(prob) == category:
+            df = pd.DataFrame(multi(prob)).reset_index()
+        else:
+            continue
+        if len(df) < min_performers:
+            continue
+        else:
+            colnames = list(df.columns)
+            colnames[0] = 'performer'
+            df.columns = colnames
+            dfs.append(df)
+    if len(dfs) > 0:
+        return pd.concat(dfs).reset_index(drop=True)
+    else:
+        return None
+
 def bigdf(min_performers=5):
     dfs = []
-    for cat, kws in category_to_keywords().items():
-        df = measures_all_probs(min_performers=min_performers, multi=multizscore, keywords=kws)
+    for cat in categories():
+        df = measures_all_probs_categories(min_performers=min_performers, multi=multizscore, category=cat)
         if df is not None:
             df = df.assign(category=cat)
-            df = df.assign(kws=kws)
             dfs.append(df)
     return pd.concat(dfs).reset_index(drop=True)
 
@@ -231,7 +271,7 @@ def sumdf(min_performers=5):
     return dg.assign(best_string=dg.best.apply(rep))
 
 def kw_regression(min_performers=5, keywords=None):
-    df = measures_all_probs(min_performers, multizscore, keywords)
+    df = measures_all_probs_keywords(min_performers, multizscore, keywords)
     if df is not None:
         mod = smf.ols(formula = 'max_score_zscore ~ l1_zscore + linf_zscore + count_zscore', data=df)
         res = mod.fit()
