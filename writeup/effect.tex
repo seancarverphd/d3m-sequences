@@ -1,6 +1,7 @@
 \documentclass{article}
 
 \usepackage{graphicx}
+\usepackage[export]{adjustbox}
 
 \title{The effect of pipeline-collection-diversity on performance}
 
@@ -20,7 +21,7 @@
 \section{Results}
 See Figure 1 below.
 \begin{figure}
-\includegraphics{heatmap.pdf}
+	\adjincludegraphics[height=12cm, trim={0 0 {.01\width} 0},clip]{heatmap.pdf}
 \caption{This is the caption.}
 \end{figure}
 
