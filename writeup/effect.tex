@@ -5,21 +5,44 @@
 
 \title{The effect of pipeline-collection-diversity on performance}
 
-\author{Data Machines Corporation}
+\author{Sean Carver @ Data Machines Corporation}
 
 \begin{document}
 
 \maketitle
 
-\abstract{Have performers who have submitted \emph{diverse}
-  collections of pipelines tended to have performed better than those
-  who have submitted less diverse collections of pipelines?  The answer
-  is: \emph{yes, there has existed a measurable improvement in best
-    score with diversity, but the effect-size is small enough that it
-    may not be of any consequence.}}
+\abstract{Do performers who submit \emph{diverse} collections of
+  pipelines tend to perform better than those who submit less diverse
+  collections of pipelines?  The answer for the Winter 2020 evaluation
+  is: \emph{yes, there exists a measurable/significant improvement in
+    best score with increasing diversity, but the effect-size is small
+    enough that it may not be of any consequence for making
+    recommendations to performers.}}
+
+\section{Measures of Diversity}
+First we need to define the distance between two pipelines.  We choose
+the Levenshtein edit distance.  First we write the two pipelines as
+sequences of primitives.  The primitives are written as ``letters'' in
+a large alphabet (software allows two letter pairs to be used to
+represent a signgle ``letter'').  The Levenshtein edit distance is the
+minumum number of substitutions, insertions and/or deletions needed to
+bring one sequence to the other.  This measure satisfies the axioms
+for a distance.
+
+We tried several alternatives for diversity.  The most well-behaved
+measures (i.e.\ behave as expected on synthetic data) were vector
+norms where the vector components were the Levenshtein distances for
+all possible unordered pairs of pipelines in the collection.  We used
+$l_p$ norms where $p$ was a parameter varying between 1 and $\infty$.
+The $l_\infty$ norm (maximum component) is large when there is at
+least one pair of pipelines at great distance.  On the other hand, the
+$l_1$ norm (sum of components) can be large when there are many
+pipelines at moderate distance.  Note that absolute values are
+unnecessary in the definitions because all distances (Levenshtein
+included) must be non-negative.
 
 \section{Results}
-See Figure 1 below.
+A rough idea of the effect of diversity
 \begin{figure}
 \adjincludegraphics[height=12cm, trim={0 0 {.01\width} 0},clip]{heatmap.pdf}
 \caption{Heat map of $l_2$ diversity see section ``Measures of
@@ -87,7 +110,7 @@ See Figure 1 below.
 
   \section{Significance}
   We claim that the effect of diversity on the Winter 2020 evaluation
-  was measureable, meaning statistically significant.
+  was measurable, meaning statistically significant.
 
   \section{Quantifying the small effect size}
   We claim that the effect size is small enough that it may be
