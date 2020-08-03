@@ -14,109 +14,117 @@
 \abstract{Do performers who submit \emph{diverse} collections of
   pipelines tend to perform better than those who submit less diverse
   collections of pipelines?  The answer for the Winter 2020 evaluation
-  is: \emph{yes, there exists a measurable/significant improvement in
-    best score with increasing diversity, but the effect-size is small
-    enough that it may not be of any consequence for making
-    recommendations to performers.}}
+  is: \emph{yes, there exists a measurable (i.e.\ significant)
+    improvement in best score with increasing diversity, but the
+    effect-size is small enough that it may not be of any consequence
+    for making recommendations to performers.}}
+
+\section{Introduction}
+In section \ref{sec:measures}, \emph{Measures of Diversity}, we define
+several measures of the diversity within a collection of three or more
+pipelines.
+
+In section \ref{sec:glance}, \emph{Results at a Glance}, we present a
+heat map showing briefly the (weak) connection between diversity and
+performance.
+
+In section \ref{sec:significant}, \emph{The effect is significant}, we
+show that diversity has a significant effect on performance.
+
+In section \ref{sec:small}, \emph{The effect is small}, we justify the
+statement that the effect is small for the evaluation under
+consideration, Winter 2020.
+
+In a final section \ref{sec:visualization}, \emph{Visualizing
+  collections} we show a cartoon visualization of collections of
+pipelines for a problem together with a multiple alignment.
 
 \section{Measures of Diversity}
-First we need to define the distance between two pipelines.  We choose
-the Levenshtein edit distance.  First we write the two pipelines as
-sequences of primitives.  The primitives are written as ``letters'' in
-a large alphabet (software allows two letter pairs to be used to
-represent a signgle ``letter'').  The Levenshtein edit distance is the
+\label{sec:measures}
+Before we can define \emph{diversity} of a collection of (say 3 to 20)
+pipelines, we first need to define the distance between two pipelines.
+We choose the Levenshtein edit distance as this measure between two
+pipelines.  Specifically, we first express the pipelines as sequences
+of primitives, where primitives are written as ``letters'' in a large
+alphabet.  The software we use accommodates all D3M primitives with
+two letter pairs, each pair representing a single ``letter''
+(primitive) of the alphabet.  The Levenshtein edit distance is the
 minumum number of substitutions, insertions and/or deletions needed to
-bring one sequence to the other.  This measure satisfies the axioms
-for a distance.
+bring one sequence to coincide with the other.  This measure satisfies
+the axioms for a distance.
 
-We tried several alternatives for diversity.  The most well-behaved
-measures (i.e.\ behave as expected on synthetic data) were vector
-norms where the vector components were the Levenshtein distances for
-all possible unordered pairs of pipelines in the collection.  We used
-$l_p$ norms where $p$ was a parameter varying between 1 and $\infty$.
-The $l_\infty$ norm (maximum component) is large when there is at
-least one pair of pipelines at great distance.  On the other hand, the
-$l_1$ norm (sum of components) can be large when there are many
-pipelines at moderate distance.  Note that absolute values are
-unnecessary in the definitions because all distances (Levenshtein
-included) must be non-negative.
+But distance involves just two pipelines; diversity measures variation
+among a collection of three or more pipelines.  We tried several
+alternatives for quantifying diversity.  The most well-behaved
+measures (i.e.\ the ones that behave most closely to our expectations
+on synthetic data) were vector norms where the vector components were
+the Levenshtein distances for all possible unordered pairs of
+pipelines in the collection.
 
-\section{Results}
-A rough idea of the effect of diversity
+More precisely, we used $l_p$ norms where $p$ was a parameter varying
+between 1 and $\infty$.  The different norms measure different
+quantities.  At the extreme, the $l_\infty$ norm (maximum
+edit-distance component) is large when there is at least one pair of
+pipelines at great distance, regardless of the positions (great or
+small) of the other as-close or closer distances.  On the other hand,
+the $l_1$ norm (sum of the edit-distance components) can still be
+relatively large if there are many pairs pipelines at moderate
+distance, even though there is no pair at great distance.  We point
+out that the choice the different norms can sometimes matter: we have
+noted that the choice can order sets of collections---synthetic or
+real---differently in terms of diversity.
+
+Note that absolute values found in textbook definitions of the $l_p$
+norm:
+$$l_p([v_1,\dots,v_n]) = \sqrt[p]{|v_1|^p + \dots + |v_n|^p}$$ remain
+unnecessary because all distances (e.g.\ the Levenshtein edit distance
+components of $v$) must be non-negative by the properties of distance.
+
+In the $l_p$ norm, what value for the parameter $p$ do we pick?  If
+you are using only one measure of diversity, we recommend the $l_2$
+norm as a nice tradeoff between the two extremes.  That said, it is
+more informative to report two or more measures of diversity, in which
+case $l_1$ and $l_\infty$ should be included because they are most
+independent.
+
+\section{Results at a Glance}
+\label{sec:glance}
+We showed the $l_2$ measure of diversity together with an indication
+of best for problems, across performer and problem category.  See
+Figure \ref{fig:heatmap}.  The figure suggests, as we have stated in
+the abstract, a small but measurable effect of diversity on
+performance.
+
 \begin{figure}
 \adjincludegraphics[height=12cm, trim={0 0 {.01\width} 0},clip]{heatmap.pdf}
 \caption{Heat map of $l_2$ diversity see section ``Measures of
-  Diversity'' for a discussion of this measure and other statistics
-  that we use to quantify diversity.  The horizontal axis is problem
-  category and the vertical axis is performer.  The number of
-  asterisks in each cell is the number of problem instances in the
-  corresponding category where the corresponding performer had the
-  best (or tied for best) performing pipeline.  There were 37 ties
-  (including multi-way ties) in 103 problems, so there are an
-  additional 37 asterisks in the figure beyond the total number of
-  problems.}
+  Diversity'' for a discussion of this and other measures we use to
+  quantify diversity.  The horizontal axis is the problem category and
+  the vertical axis is performer for the Winter 2020 evaluation.  The
+  number of asterisks in each cell is the number of problem instances
+  in the corresponding category-performer which was the best (or tied
+  for best) performing pipeline for any problem.  There were 37 ties
+  (including multi-way ties), corresponding to an additional 37
+  asterisks in the figure beyond the total number of 103 problems.}
+\label{fig:heatmap}
 \end{figure}
 
-\section{Quantifying pipeline-collection-diversity}
-  Before we define the \emph{diversity of a collection of pipelines},
-  we must define the \emph{distance between a pair of pipelines}.
-  Each possible primitive is given a letter in a large alphabet, and
-  we define the distance between two pipelines as the Levenshtein edit
-  distance between the pair: the minimum number of substitutions,
-  insertions, and deletions, needed to make the two sequences
-  identical.
+\section{The effect is significant}
+\label{sec:significant}
+We claim that the effect of diversity on the Winter 2020 evaluation
+was measurable, meaning statistically significant.
 
-  We considered several measures of collection diversity, looking at
-  synthetic data to see if our measures made sense.  We achieved most
-  success by concatenating the edit distances (between all pairs of
-  pipelines in the collection) into a vector and defining the
-  diversity as the \emph{norm} of this vector.  But this statement
-  does not yet pin down the concept of diversity, because many notions
-  of norm exist.
+\section{The effect is small}
+\label{sec:small}
+We claim that the effect size is small enough that it may be
+inconsequential.
 
-  Common norms are the $l_1$ norm, the $l_2$ norm and the $l_\infty$
-  norm.  Indeed, the $l_p$ norm exists for any real number $p$ which
-  is greater than or equal to 1.  All of these choices define a
-  continuum of alternative notions of diversity.
+\section{Visualizing collections}
+\label{sec:visualization}
+In this final section, we show a cartoon visualization of collections
+of pipelines for a problem together with a multiple alignment.
 
-  The $l_1$ norm defines diversity as the \emph{sum} of the edit
-  distances.  Technically $l_1(v)$ is the sum of the absolute values
-  of the components of $v$.  But in our case, all edit distances must
-  remain positive, so it is not necessary to require absolute values.
-
-  On the other extreme, $l_\infty$ defines diversity as the largest
-  edit distance between all pairs of pipelines in the collection
-  (i.e.\ the \emph{diameter of the collection}).  Notice that
-  $l_\infty$ does indeed define diversity differently from $l_1$.  The
-  two norms will rank two collections differently if one has many
-  pairs of pipelines at small to moderate distance but no pairs at
-  large distance, whereas the other has a few pairs at large distance,
-  and the rest at zero distance.  (Distinct pipelines can have zero
-  distance if they have the same sequence of primitives but possibly
-  different values for hyperparameters.)  It should be evident that
-  these two measures define alternative, but valid and useful notions
-  of diversity.
-
-  For increasing values of $p$ between 1 and $\infty$, the $l_p$
-  measure of diversity combines both notions while placing increasing
-  weight on the second notion when trading off the two definitions.
-  Partway between $l_1$ and $l_\infty$ is the $l_2$ norm which is the
-  Euclidean length of the vector of Levenshtein edit distances.
-
-  What notion of diversity should be used?  If only one notion is
-  reported, $l_2$ provides a nice compromise, but if two are reported,
-  $l_1$ and $l_\infty$ together give the most information about the
-  collection.
-
-  \section{Significance}
-  We claim that the effect of diversity on the Winter 2020 evaluation
-  was measurable, meaning statistically significant.
-
-  \section{Quantifying the small effect size}
-  We claim that the effect size is small enough that it may be
-  inconsequential.
-  
-  \end{document}
+\end{document}
 
 
   
