@@ -69,4 +69,6 @@ abline(est_intercepts[3], est_slope[3], col=3, lwd=2)
 #  estimated a "better" intercept or slope for that group? How might we use repeated
 #  simulations to show that hierarhcical modeling is better on average, even if not in all cases?
 
-
+# MY ANSWER: The true slope and true intercept values are each drawn from the same Normal
+#            distributions (one each for slope/intercept) across group.  Therefore using information across groups to estimate
+#            these quantities makes sense.  Heirarchical regression does this in a principled way.
