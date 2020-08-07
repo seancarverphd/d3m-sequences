@@ -77,11 +77,12 @@ def multimeasure(prob=0):
     multi = multi.assign(prob_num=prob)
     multi = multi.assign(prob_name=problem_name(prob=prob))
     multi = multi.assign(keywords=problem_keywords(prob=prob))
+    multi = multi.assign(category=problem_to_category(prob))
     multi = multi.assign(ranking=multi.max_score.rank(method='dense', ascending=False))
     multi = multi.assign(best=multi.ranking==1)
     return multi
 
-def multizscore(prob=0):
+def multizscore(prob=0):  # Does z-scores where population is all performers for one problem
     df = multimeasure(prob=prob)
     if df is None:
         return None
@@ -89,6 +90,7 @@ def multizscore(prob=0):
     cols.remove('prob_num')  # These statements remove from list for creating z-scores.  Columns stay in dataframe df.
     cols.remove('prob_name')
     cols.remove('keywords')
+    cols.remove('category')
     cols.remove('ranking')
     cols.remove('best')
     for col in cols:
@@ -211,10 +213,10 @@ def problem_to_category(prob):
 def count_problems_for_each_category():
     return categories_to_problems().sum(axis=0)
 
-def measures_all_probs_keywords(min_performers=5, multi=multizscore, keywords=None):
+def measures_all_probs_keywords(min_performers=5, multi=multizscore, keywords=None, default_if_none=False):
     dfs = []
     for prob in range(count_problems()):
-        if problem_has_keywords(prob, keywords, default_if_none=False):
+        if problem_has_keywords(prob, keywords, default_if_none=default_if_none):
             df = pd.DataFrame(multi(prob)).reset_index()
         else:
             continue
@@ -279,6 +281,11 @@ def kw_regression(min_performers=5, keywords=None):
         # return res.summary()
     else:
         return None
+
+def df_for_hierarchical_regression(min_performers=5, keywords=None):
+    df = measures_all_probs_keywords(min_performers, multizscore, keywords, default_if_none=True)
+    df.to_csv("toR.csv")
+    return df
 
 def cat_regression(min_performers=5, category=None):
     return kw_regression(min_performers=5, keywords=category_to_keywords()[category])
