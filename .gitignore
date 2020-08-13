@@ -145,3 +145,4 @@ dmypy.json
 .Rproj.user
 .Rhistory
 .RData
+.gz

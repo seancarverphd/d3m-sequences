@@ -1,7 +1,8 @@
 \documentclass{article}
-
+\usepackage[margin=1.0in]{geometry} % smaller margin for document
+\usepackage[margin=.7in]{caption} % little more margin for captions to make look nice
 \usepackage{graphicx}
-\usepackage[export]{adjustbox}
+%\usepackage[export]{adjustbox}   % drop unused package
 
 \title{The effect of pipeline-collection-diversity on performance}
 
@@ -96,8 +97,11 @@ Figure \ref{fig:heatmap}.  The figure suggests, as we have stated in
 the abstract, a small but measurable effect of diversity on
 performance.
 
-\begin{figure}
-\adjincludegraphics[height=12cm, trim={0 0 {.01\width} 0},clip]{heatmap.pdf}
+% the [h] asks LaTeX to keep the image Here
+\begin{figure}[h]
+% typically cenetered
+\centering
+\includegraphics[scale=.6]{heatmap.pdf}
 \caption{Heat map of $l_2$ diversity see section ``Measures of
   Diversity'' for a discussion of this and other measures we use to
   quantify diversity.  The horizontal axis is the problem category and
