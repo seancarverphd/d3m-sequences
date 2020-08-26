@@ -116,28 +116,49 @@ a very small but measurable effect of diversity.
 \section{Quantifying the Effect of Diversity}
 \label{sec:quantifying}
 We use regression-based methods to quantify the effect of diversity on
-score. This analysis is complicated by several factors, which we
+performance. This analysis is complicated by several factors, which we
 address by various, overlapping methodological choices. Overall, our
-goal is to specify predictive models of score on the bases of the
-$l_1$ and $l_\infty$ norms, as well as the number of pipelines
+goal is to specify predictive models of performance on the bases of
+the $l_1$ and $l_\infty$ norms, as well as the number of pipelines
 submitted. Our unit of analysis is the collection of pipelines
 submitted by a performer, which features diversity measures mentioned,
 a count, and the score obtained by its best member. We group these by
-problem-types (e.g. ``binary classification'') for analysis. The
-diversity measures and scores are not comparable across problems, or
-problem types; thus, we move to measuring all predictors and scores on
-a per-problem-type z-score basis.
+problem across performer for analysis. The diversity measures and
+scores are not comparable across problems, or problem types; thus, we
+move to measuring all predictors and scores on a per-problem z-score
+basis.
 
-Below, we report on XXX classes of statistical models. In the first,
+Below, we report on five classes of statistical models. In the first,
 we group all problem types together for analysis in a ``complete
-pooling'' model; see MODEL 1. We can see that INTERPRET RESULTS. We
-ran a model including fixed effects for problem type, and saw no
-change in our key predictors. We evaluated the possibility of
-multicollinearty by running PCA over our predictors and using the
-first principal component as an omnibus measure of diversity, and
-found (whatever we found; see MODEL 2).
+pooling'' model; see MODEL A. We can see that there is a significant
+effect of diversity on performace (P-VALUE), but the coefficent is
+small (INTERPRET).
 
+We ran a complete pooling model including fixed effects for problem
+type, and saw no change in our key predictors. We evaluated the
+possibility of multicollinearty by running PCA over our predictors and
+using the first principal component as an omnibus measure of
+diversity, and found (whatever we found; see MODEL B).
 
+We then ran a no pooling model (MODEL C).
+
+We then ran a hierarchical model with random effects on the intercept
+(MODEL D).
+
+Finally we can a hierarchical model with random effects on both the
+intercept and slope (MODEL E).
+
+\begin{table}
+  \begin{tabular]{c|c|c|c|c}
+    Model & Coefficient & p-value & estimate & std error \\
+    A & $l_1$ & & & \\
+    B & $l_1$ & & & \\
+    C & $l_1$ & & & \\
+    D & $1_1$ & & & \\
+    E & $l_1$ & & &
+  \end{tabular}
+  \caption{This is table 1.}
+\end{table}
 \section{Visualizing Collections}
 \label{sec:visualization}
 In this final section, we show a cartoon visualization of collections
@@ -163,7 +184,7 @@ of pipelines for a problem together with a multiple alignment.
   draw a pretty picture (what it was designed to do).  Nevertheless,
   we found these figures useful for keeping pipelines in memory---as
   long as the image is interpreted as a ``cartoon'' and not a
-  ``topographical map''.  Cartoons for the other problems are
+  ``topographical map.''  Cartoons for the other problems are
   available upon request.}
 \label{fig:seebelow}
 \end{figure}
