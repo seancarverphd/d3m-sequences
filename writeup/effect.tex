@@ -18,9 +18,9 @@
   is effectively no. While there does exist statistically significant
   effect of increased diversity on increased score, the effect size is
   trivial. Thus, it seems that less diverse collections of pipelines,
-  i.e. those that focus more on hyperparameter tuning, can be as
-  effective as those that explore a greater diversity and/or ordering
-  of primitives. }
+  i.e. those that focus more on hyperparameter tuning, can as
+  effective (or almost as effective, on average) as those that explore
+  a greater diversity and/or ordering of primitives. }
 
 \section{Introduction}
 In section \ref{sec:measures}, \emph{Measures of Diversity}, we define
@@ -78,7 +78,7 @@ real---differently in terms of diversity.
 
 In the $l_p$ norm, what value for the parameter $p$ do we pick?  If
 you are using only one measure of diversity, we recommend the $l_2$
-norm as a nice tradeoff between the two extremes.  That said, it is
+norm as a nice trade off between the two extremes.  That said, it is
 more informative to report two or more measures of diversity, in which
 case $l_1$ and $l_\infty$ should be preferred because they are most
 independent.
@@ -92,7 +92,7 @@ trending towards yellow colors indicating larger $l_2$ edit distance
 norms.The number of asterisks in each cell captures the count of times
 a pipeline in that performer-category was the best (or tied). For
 instance, in the second row of the first column, UCB twice had the
-best-performing pipeline on a dataset in the binary\_classification
+best-performing pipeline on a data set in the binary\_classification
 problem category. Overall, the figure suggests (and we quantify below)
 a very small but measurable effect of diversity.
 
@@ -130,39 +130,66 @@ basis.
 
 Below, we report on five classes of statistical models. In the first,
 we group all problem types together for analysis in a ``complete
-pooling'' model; see MODEL A. We can see that there is a significant
-effect of diversity on performace (P-VALUE), but the coefficent is
-small (INTERPRET).
+pooling'' model; see MODEL A.
 
-We ran a complete pooling model including fixed effects for problem
-type, and saw no change in our key predictors. We evaluated the
-possibility of multicollinearty by running PCA over our predictors and
-using the first principal component as an omnibus measure of
-diversity, and found (whatever we found; see MODEL B).
+First, ran a complete pooling model including fixed effects for problem
+type, and saw no change in our key predictors.
 
-We then ran a no pooling model (MODEL C).
+% We evaluated the possibility of multicollinearty by running PCA over
+% our predictors and using the first principal component as an omnibus
+% measure of diversity, and found (whatever we found; see MODEL B).
+
+Second we ran a fixed effects model (MODEL B) on category, where
+problems were classified in terms of type of problem (e.g.\ time
+series, binary classification, etc).
+
+We then ran a no pooling model (MODEL C), which is actually numerous
+separate models, one for each problem-type category.
 
 We then ran a hierarchical model with random effects on the intercept
 (MODEL D).
 
-Finally we can a hierarchical model with random effects on both the
+Finally, we ran a hierarchical model with random effects on both the
 intercept and slope (MODEL E).
+
+In all models we see that there is a significant effect of diversity
+on performance, but the coefficient is small (less than .2) To
+interpret this result, an increase in $l_1$ diversity of one
+correponds to an increase of the z-score of the max score by less than
+0.2.
 
 \begin{table}
   \begin{tabular}{c|c|c|c|c}
     Model & Coefficient & p-value & estimate & std error \\
-    A & $l_1$ & & & \\
-    B & $l_1$ & & & \\
-    C & $l_1$ & & & \\
-    D & $1_1$ & & & \\
-    E & $l_1$ & & &
+    A  & $l_1$ (z-score) & 0.00716 ** & 1.984e-01 & 7.355e-02 \\
+    B  & $l_1$ (z-score) & 0.00763 ** & 1.984e-01 & 7.414e-02 \\
+    C  & $l_1$ (z-score) & multiple models, same story. & & \\
+    D  & $l_1$ (z-score) & 0.00716 ** & 1.984e-01 & 7.355e-02 \\
+    E  & $l_1$ (z-score) & 0.0155  *  & 1.778e-01 & 7.329e-02 \\
   \end{tabular}
-  \caption{This is table 1.}
+  \caption{Summary of models predicting the z-score of a performer's
+    best score in a submitted collection, based on $l_1$ and
+    $l_\infty$ measures of diversity of the collection and count of
+    number of pipelines in the collection.  We performed a regression
+    analysis with 5 different models (A-E, see text).  The table
+    shows the model, the coefficient examined (in this case, always
+    considered just $l_1$, among other predictors we used: $l_\infty$
+    and count).  Furthermore, the table shows p-values (two tailed,
+    under the null hypothesis that coefficient is zero), estimates of
+    coefficients and standard errors of the estimates.  Note that
+    several entries of the table are identical to our numerical
+    precision.  We attribute this result to category-level predictors
+    that do not covary with response variable.  We examine the effect
+    of colinearity between $l_1$ and $l_\infty$ and found that it did
+    not change our results substantially. Significance codes: 0
+    ``***'' 0.001 ``**'' 0.01 ``*'' 0.05 ``.''  0.1 \emph{[blank]} 1.}
 \end{table}
+
 \section{Visualizing Collections}
 \label{sec:visualization}
 In this final section, we show a cartoon visualization of collections
-of pipelines for a problem together with a multiple alignment.
+of pipelines for a problem together with a multiple alignment (see
+Figure 2, and its caption).
 
 \begin{figure}
 \centering
