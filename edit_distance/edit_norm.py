@@ -235,7 +235,7 @@ def measures_all_probs_keywords(min_performers=5, multi=multizscore, keywords=No
 def measures_all_probs_categories(min_performers=5, multi=multizscore, category=None):
     dfs = []
     for prob in range(count_problems()):
-        if problem_to_category(prob) == category:
+        if category is None or problem_to_category(prob) == category:
             df = pd.DataFrame(multi(prob)).reset_index()
         else:
             continue
