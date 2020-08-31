@@ -116,35 +116,49 @@ a very small but measurable effect of diversity.
 \section{Quantifying the Effect of Diversity}
 \label{sec:quantifying}
 We use regression-based methods to quantify the effect of diversity on
-performance. This analysis is complicated by several factors, which we
-address by various, overlapping methodological choices. Overall, our
-goal is to specify predictive models of performance on the bases of
-the $l_1$ and $l_\infty$ norms, as well as the number of pipelines
-submitted. Our unit of analysis is the collection of pipelines
-submitted by a performer, which features diversity measures mentioned,
-a count, and the score obtained by its best member. We group these by
-problem across performer for analysis. The diversity measures and
-scores are not comparable across problems, or problem types; thus, we
-move to measuring all predictors and scores on a per-problem z-score
-basis.
+performance.  We address complications by combining several
+overlapping methodologies.  Overall, our goal is to specify predictive
+models of performance.  Our unit of analysis is a collection of
+pipelines submitted by a performer for a particular problem.  The
+response variable is the best score of all pipelines in the
+collection.  Our models predict best score based on three explanatory
+variables: the $l_1$ and $l_\infty$ norms for the collection (as
+discussed above), as well as ``count,'' the number of pipelines in the
+collection.
 
-Below, we report on five classes of statistical models. In the first,
-we group all problem types together for analysis in a ``complete
-pooling'' model; see MODEL A.
+The fact that different metrics were used for scoring different
+problems forced us to make adjustments.  In some cases the best score
+was the greatest score, whereas in others the best score was the least
+score.  By reversing the sign where appropriate, we transform scores
+so that greatest score was always best score.  Our response variable
+was then called ``max\_score.''
 
-First, ran a complete pooling model including fixed effects for problem
-type, and saw no change in our key predictors.
+The fact that max\_scores were on widely different scales across
+problems forced us to switch to standardized coordinates (z-scores)
+for max\_score.  The population for this standarization was all
+collections for all performers for one particular problem---as these
+were guaranteed to have metrics on the same scale.
+
+At this point, we also transformed the predictor variables to
+standardized coordinates (against the same population), making
+predictors comparable only to other predictors for that problem.
+
+Below, we report on five classes (A-E) of statistical models.  For the
+purposes of analysis, we grouped problems by eleven categories
+(e.g.\ time series, binary classification, etc).  See the horizontal
+axis of Figure 1 for a list of our categories.
+
+In the first model, we group all problem categories together for
+analysis in a ``complete pooling'' model; see MODEL A.
 
 % We evaluated the possibility of multicollinearty by running PCA over
 % our predictors and using the first principal component as an omnibus
 % measure of diversity, and found (whatever we found; see MODEL B).
 
-Second we ran a fixed effects model (MODEL B) on category, where
-problems were classified in terms of type of problem (e.g.\ time
-series, binary classification, etc).
+In the second, we ran a fixed effects model (MODEL B) on category.
 
-We then ran a no pooling model (MODEL C), which is actually numerous
-separate models, one for each problem-type category.
+Third, we then ran a no pooling model (MODEL C), which is actually
+numerous separate models, one for each category.
 
 We then ran a hierarchical model with random effects on the intercept
 (MODEL D).
@@ -152,11 +166,39 @@ We then ran a hierarchical model with random effects on the intercept
 Finally, we ran a hierarchical model with random effects on both the
 intercept and slope (MODEL E).
 
-In all models we see that there is a significant effect of diversity
-on performance, but the coefficient is small (less than .2) To
-interpret this result, an increase in $l_1$ diversity of one
-correponds to an increase of the z-score of the max score by less than
-0.2.
+In all models, we see that there is a significant effect of $l_1$
+z-score diversity on performance, but the coefficient is small (less
+than .2).  The fact that we are using z-scores for both the predictors
+and response variable complicates the interpretation of this result.
+What it says is that for an increase of z-score of the predictor
+variable ($l_1$ z-score) by 1 the model predicts that the response
+variable (max\_score z-score) will increase by almost 0.2.  Put
+another way when the raw $l_1$ increases by one standard deviation for
+that problem, max\_score increases by almost 0.2 standard deviations
+for that problem.
+
+It is helpful to translate this result into raw scores for $l_1$.  A
+unit increase in $l_1$ means an one extra substitution, insertion, or
+deletion is needed to bring just one pair of pipelines to coincidence.
+We keep z-scores for max\_score because raw scores for max\_scores are
+meaningless for across-problem comparison.  To convert to a
+transformation from a unit increase in raw $l_1$ to a specified
+z-score increase of max\_score, we must divide the coefficient (about
+0.2, depending on model) by the standard deviation of $l_1$ for the
+population referenced by the z-score.  Of course, each problem has a
+different reference population so each problem has a different
+standard deviation.  By implication, the transformed slopes will be
+different for each problem, but we can obtain summaries of the
+distribution of these slopes.
+
+The 5-number summary of this distribution of slopes is
+$$[0.00037622, 0.00052519, 0.00067828, 0.00114945, 0.00809511],$$
+showing that a unit increase in $l_1$ leads to at most a 8-thousanths
+increase in the z-score of max\_score, and the increase is usually
+quite a bit less.  Our conclusion is that diversity has a negligibly
+small effect on performance.
+
+Table 1 summarizes our results.
 
 \begin{table}
   \begin{tabular}{c|c|c|c|c}
