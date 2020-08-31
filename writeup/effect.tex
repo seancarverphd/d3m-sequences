@@ -15,12 +15,12 @@
 \abstract{Do performers who submit \emph{diverse} collections of
   pipelines tend to perform better than those who submit less diverse
   collections of pipelines? The answer for the Winter 2020 evaluation
-  is effectively no. While there does exist statistically significant
-  effect of increased diversity on increased score, the effect size is
-  trivial. Thus, it seems that less diverse collections of pipelines,
-  i.e. those that focus more on hyperparameter tuning, can as
-  effective (or almost as effective, on average) as those that explore
-  a greater diversity and/or ordering of primitives. }
+  is effectively no. While there does exist a statistically
+  significant effect of increased diversity on increased score, the
+  effect size is trivial. Thus, it seems that less diverse collections
+  of pipelines, i.e. those that focus more on hyperparameter tuning,
+  can be as effective (or almost as effective, on average) as those
+  that explore a greater diversity and/or ordering of primitives. }
 
 \section{Introduction}
 In section \ref{sec:measures}, \emph{Measures of Diversity}, we define
@@ -149,22 +149,13 @@ purposes of analysis, we grouped problems by eleven categories
 axis of Figure 1 for a list of our categories.
 
 In the first model, we group all problem categories together for
-analysis in a ``complete pooling'' model; see MODEL A.
-
-% We evaluated the possibility of multicollinearty by running PCA over
-% our predictors and using the first principal component as an omnibus
-% measure of diversity, and found (whatever we found; see MODEL B).
-
-In the second, we ran a fixed effects model (MODEL B) on category.
-
-Third, we then ran a no pooling model (MODEL C), which is actually
-numerous separate models, one for each category.
-
-We then ran a hierarchical model with random effects on the intercept
-(MODEL D).
-
-Finally, we ran a hierarchical model with random effects on both the
-intercept and slope (MODEL E).
+analysis in a ``complete pooling'' model; see MODEL A.  In the second,
+we ran a fixed effects model (MODEL B) on category.  Third, we then
+ran a no pooling model (MODEL C), which is actually numerous separate
+models, one for each category.  We then ran a hierarchical model with
+random effects on the intercept (MODEL D).  Finally, we ran a
+hierarchical model with random effects on both the intercept and slope
+(MODEL E).
 
 In all models, we see that there is a significant effect of $l_1$
 z-score diversity on performance, but the coefficient is small (less
